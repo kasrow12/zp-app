@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZP-template</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <label class="czesci_checkbox">
+        <input type="checkbox" id="czesci" onchange="document.getElementById('container').classList.toggle('bez-czesci'); document.getElementById('container').classList.toggle('czesci')">
+        Czy części?
+    </label>
+    <label class="czesci_checkbox">
+        <input type="checkbox" id="admin" onchange="adminHandler()">
+        Admin
+    </label>
+    <form class="container bez-czesci" id="container" action="#">
+        <div class="lp">Lp.</div>
+        <div class="center color">Wniosek o udzielenie zamówienia publicznego</div>
+
+        <div class="full-width section_spacer color">Część A</div>
+
+        <div class="lp">1.</div>
+        <section class="two-column">
+            <div class="color">Nazwa jednostki wnioskodawcy</div>
+            <input class="input-box" id="nazwa_jednostki" value="Politechnika Warszawska Samorząd Studentów" disabled>
+        </section>
+
+        <div class="lp">2.</div>
+        <section class="two-column">
+            <div class="color">Nazwa zamówienia publicznego (przedmiotu zamówienia)</div>
+            <div class="input" id="nazwa_zamowienia_text">Zakup pionu zasilającego do zasilania stanowiska realizatorskiego dla studentów zasilającego do zasilania stanowiska realizatorskiego dla studentów PW</div>
+            <input type="hidden" id="nazwa_zamowienia">
+        </section>
+
+        <div class="lp">3.</div>
+        <section class="two-column borders">
+            <div class="color">Rodzaj zamówienia</div>
+            <section class="flex-container input">
+                <label>
+                    <input type="radio" id="rodzaj_roboty" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()">
+                    <span class="checkbox"></span>
+                    <p>roboty budowlane</p>
+                </label>
+                <label>
+                    <input type="radio" id="rodzaj_dostawy" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()" checked>
+                    <span class="checkbox"></span>
+                    <p>dostawy</p>
+                </label>
+                <label>
+                    <input type="radio" id="rodzaj_uslugi" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()">
+                    <span class="checkbox"></span>
+                    <p>usługi</p>
+                </label>
+            </section>
+        </section>
+
+        <div class="lp">4.</div>
+        <div class="color">Wspólny Słownik Zamówień</div>
+        <div class="lp">4.1.</div>
+        <div class="input-padding-right">
+            <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv_text" value="31000000-6">
+        </div>
+        
+        <div class="lp">4.2.</div>
+        <div class="input-padding-right">
+            <span>Dodatkowe kody CPV:</span><span class="input" id="dodatkowe_cpv_text">31700000-3, 44300000-3</span>
+            <input type="hidden" id="dodatkowe_cpv">
+        </div>
+
+        <div class="lp">5.</div>
+        <section class="two-column">
+            <div class="color">Kategoria usług <span class="small">(dotyczy usług)</span></div>
+            <input class="input-box" id="kategoria_uslug" disabled>
+        </section>
+
+        <div class="lp">6.</div>
+        <div class="color">Ujęcie zamówienia w planie zamówień</div>
+        <div class="lp">6.1.</div>
+        <label class="flex input">
+            <input type="radio" id="plan_zamowien_nie" class="checkbox-input" name="plan_zamowien" onchange="planZamowienHandler()">
+            <span class="checkbox"></span>
+            <p>nie</p>
+        </label>
+
+        <div class="lp">6.2.</div>
+        <section class="grid-container grid-6-2 borders" id="plan_zamowien_tak_container">
+            <section class="grid-row">
+                <label class="flex input">
+                    <input type="radio" id="plan_zamowien_tak" class="checkbox-input" name="plan_zamowien" onchange="planZamowienHandler()" checked>
+                    <span class="checkbox"></span>
+                    <p>tak</p>
+                </label>
+                <div class="color center">rok</div>
+                <input class="input-box center" id="plan_zamowien_rok" value="2023">
+                <div class="color center">oznaczenie planu, pozycja</div>
+                <div class="listing" id="plan_zamowien_oznaczenia_text">AC poz. 21</div>
+                <input type="hidden" id="plan_zamowien_oznaczenia">
+                <div class="color center">wartość w planie</div>
+                <div class="money" id="plan_zamowien_wartosci_text">2 137,00 zł</div>
+                <input type="hidden" id="plan_zamowien_wartosci">
+            </section>
+        </section>
+
+        <div class="lp">7.</div>
+        <section class="grid-container grid-7 borders">
+            <section class="grid-row">
+                <div class="color full-width block">
+                    Wartość <span class="small">(bez podatku od towarów i usług, ustalona z należytą starannością)</span>
+                </div>
+            </section>
+
+            <!-- po co tu ten checkbox? -->
+            <section class="grid-row">
+                <label>
+                    <input type="checkbox" class="checkbox-input" checked disabled>
+                    <span class="checkbox"></span>
+                    <p>zamówienia</p>
+                </label>
+                <input class="money input input-box" id="wartosc_zamowienia" value="31 549,60">
+                <div class="color">zł, co stanowi równowartość</div>
+                <input class="money input input-box" id="wartosc_zamowienia_euro" value="7 634,99">
+                <div class="color">euro</div>
+            </section>
+
+            <!-- części -->
+            <section class="grid-row czesci-row">
+                <div class="listing left input-padding-left">
+                    <div class="padding-left">Część 1:</div>
+                    <div class="input" id="wartosc_nazwa_1">Zakup zestawów głośnikowych </div>
+                </div>
+                <div class="money input" id="wartosc_zamowienia_1">31 549,60</div>
+                <div class="color">zł, co stanowi równowartość</div>
+                <div class="money input" id="wartosc_zamowienia_euro_1">7 634,99</div>
+                <div class="color">euro</div>
+            </section>
+
+            <section class="grid-row czesci-row">
+                <div class="listing left input-padding-left">
+                    <div class="padding-left">Część 2:</div>
+                    <div class="input" id="wartosc_nazwa_2">Zakup pokrowców i słuchawek</div>
+                </div>
+                <div class="money input" id="wartosc_zamowienia_2">31 549,60</div>
+                <div class="color">zł, co stanowi równowartość</div>
+                <div class="money input" id="wartosc_zamowienia_euro_2">7 634,99</div>
+                <div class="color">euro</div>
+            </section>
+
+            <section class="grid-row">
+                <div class="full-width color">
+                    Zamówienie udzielane w zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych:
+                </div>
+            </section>
+            <section class="grid-row no-borders">
+                <label class="full-width">
+                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_nie" class="checkbox-input" onchange="zamowieniePzpHandler()" checked disabled>
+                    <span class="checkbox"></span>
+                    <p>nie</p>
+                </label>
+            </section>
+            <section class="grid-row no-borders">
+                <label class="full-width">
+                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_tak" class="checkbox-input" onchange="zamowieniePzpHandler()" disabled>
+                    <span class="checkbox"></span>
+                    <p>tak</p>
+                </label>
+            </section>
+            <section class="grid-row no-borders">
+                <div class="full-width block input-padding-right">
+                    wartość łączna części zamówienia dotychczas udzielonych z zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych <span id="zamowienie_pzp_kwota">... zł</span>
+                </div>
+            </section>
+        </section>
+
+        <div class="lp">8.</div>
+        <div class="input-padding-right">
+            <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" id="dzien_zamowienia" value="02.04.2024">
+        </div>
+
+        <div class="lp">9.</div>
+        <div class="input-padding-right">
+            <span>Podstawa ustalenia wartości zamówienia <span class="small">(wskazać odpowiedni dokument, np. planowane koszty, kosztorys inwestorski, program funkcjonalno-użytkowy)</span>:</span><span class="input" id="podstawa_ust_wartosci_text">rozeznanie rynku, porównanie ofert</span>
+            <input type="hidden" id="podstawa_ust_wartosci">
+        </div>
+        <!-- tutaj lepiej te ceny ustawic -->
+        <div class="lp">10.</div>
+        <section class="grid-container grid-10 no-borders">
+            <section class="grid-row">
+                <div class="color block full-width">Kwota brutto <span class="small">(wartość zamówienia łącznie z należnymi opłatami, w tym VAT)</span></div>
+            </section>
+            <section class="grid-row bez-czesci-row">
+                <input class="full-width input input-box" id="wartosc_brutto" value="100 233,00 zł">
+            </section>
+            <section class="grid-row czesci-row">
+                <div class="nowrap"></div>
+                <div class="input money" id="wartosc_brutto_1">64 263,40 zł</div>
+                <div class="filler"></div>
+            </section>
+            <section class="grid-row czesci-row">
+                <div class="nowrap">Część 1:</div>
+                <div class="input money" id="wartosc_brutto_1">64 263,40 zł</div>
+                <div class="filler"></div>
+            </section>
+            <section class="grid-row czesci-row">
+                <div class="nowrap">Część 2:</div>
+                <div class="input money" id="wartosc_brutto_2">23 233,00 zł</div>
+                <div class="filler"></div>
+            </section>
+        </section>
+
+        <!-- czemu tutaj kwoty się powtarzają -->
+        <!-- co w 1. kolumnie -->
+        <div class="lp">11.</div>
+        <section class="grid-container grid-11 borders">
+            <section class="grid-row">
+                <div class="color full-width">Kwota przeznaczona na sfinansowanie zamówienia</div>
+            </section>
+            <section class="grid-row">
+                <div class="input center" id="kwota_przeznaczona">21 000,00 zł</div>
+                <div class="color">źródła finansowania</div>
+                <div class="color right">kwoty</div>
+            </section>
+            
+            <section class="grid-row bez-czesci-row">
+                <section class="grid-11-row grid-row">
+                    <div class="input listing left" id="kwota_przeznaczona_zrodlo" contenteditable="true">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                    <div class="money input-padding-right">
+                        <div class="input" id="kwota_przeznaczona">6 000,00 zł</div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="grid-row czesci-row">
+                <div class="mult-flex-row3 input-padding-right">
+                    <div>Część 1:</div>
+                    <div class="input" id="kwota_przeznaczona_nazwa_1">15 000,00 zł</div>
+                </div>
+                <section class="grid-11-row">
+                    <section class="grid-row">
+                        <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <div class="money input-padding-right">
+                            <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
+                        </div>
+                    </section>
+                    <section class="grid-row">
+                        <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <div class="money input-padding-right">
+                            <div class="input" id="kwota_przeznaczona_1">9 000,00 zł</div>
+                        </div>
+                    </section>  
+                </section>
+            </section>
+            
+            <section class="grid-row czesci-row">
+                <div class="mult-flex-row3 input-padding-right">
+                    <div>Część 2:</div>
+                    <div class="input" id="kwota_przeznaczona_nazwa_1">6 000,00 zł</div>
+                </div>
+                <section class="grid-11-row">
+                    <section class="grid-row">
+                        <div class="input" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <div class="money input-padding-right">
+                            <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
+                        </div>
+                    </section>
+                </section>
+            </section>
+        </section>
+
+        <div class="lp">12.</div>
+        <section class="grid-container grid-signature">
+            <section class="grid-row">
+                <div class="color full-width">Potwierdzenie kwoty przeznaczonej na sfinansowanie zamówienia, źródeł finansowania oraz niezgłoszenie zastrzeżeń</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width blank"></div>
+            </section>
+            <section class="grid-row">
+                <div class="color center">podpis i pieczęć kwestora/zastępcy kwestora/pełnomocnika kwestora</div>
+                <div class="color center border-left">data</div>
+            </section>
+        </section>
+
+        <div class="lp">13.</div>
+        <div class="input-padding-right">
+            <span>Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie<br>gdy jest to uzasadnione obiektywną przyczyną)</span>:</span><span class="input" id="termin_wykonania_text">23.05.2024 r.</span>
+            <input type="hidden" id="termin_wykonania">
+        </div>
+
+        <div class="lp">14.</div>
+        <section>
+                <div>Informacje dodatkowe <span class="small">(jeżeli dotyczy, np. nazwy potencjalnych wykonawców, itd.)</span>:</div>
+                <div class="input line-height" id="informacje_dodatkowe_text">Rozliczenie przez fakturę VAT   
+Podmiot, do którego zamierza się wystąpić z ofertą: XXX
+Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
+            <input type="hidden" id="informacje_dodatkowe">
+            <!-- <section class="grid-row">
+                <div class="full-width">Rozliczenie przez fakturę VAT</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width">Podmioty, do których zamierza się wystąpić z ofertą: MEDIAM Sp. z o.o.</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width listing left">
+                    <p>Część 1:</p>
+                    <p id="informacje_czesc_1">Wybrano firmę Thomann GmbH ze względu na najkorzystniejszą ofertę cenową</p>
+                </div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width listing left">
+                    <p>Część 2:</p>
+                    <p id="informacje_czesc_2">Wybrano firmę Audiopol s.c. Paweł Burkowski Norbert Nawrot ze względu na najkorzystniejszą ofertę cenową</p>
+                </div>
+            </section> -->
+        </section>
+        
+        <div class="lp">15.</div>
+        <div class="input-padding-left">
+            <span class="padding-left">Załączniki do wniosku: oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</span>
+            <br>
+            <span class="input" id="zalaczniki_text">Dokument z ustalenia wartości zamówienia</span>
+            <input type="hidden" id="zalaczniki">
+        </div>
+
+        <div class="lp">16.</div>
+        <div class="color">Procedura/tryb <span class="small">(zaznaczyć pole wyboru w 16.1. lub w 16.2. – w tym przypadku obligatoryjnie uzupełnić część B)</span></div>
+
+        <div class="lp">16.1.</div>
+        <div class="line-height">
+            <input type="checkbox" class="checkbox-input" disabled checked>
+            <span class="checkbox"></span><!--
+            -->Zamówienie udzielane z wyłączeniem/<s>stosowaniem</s> przepisów ustawy Prawo zamówień publicznych
+            <br>
+            Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>: art. 2, ust. 1, pkt. 1 ustawy PZP
+            <br>
+            Uzasadnienie faktyczne zastosowania ww. podstawy prawnej: Wartość zamówienia nie przekracza kwoty 130 000,00 zł
+        </div>
+
+        <div class="lp">16.2.</div>
+        <div class="line-height">
+            <input type="checkbox" class="checkbox-input" disabled>
+            <span class="checkbox"></span><!--
+            -->Tryb udzielenia zamówienia:
+            <br>
+            Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:
+            <br>
+            Uzasadnienie faktyczne (powody) zastosowania trybu:
+        </div>
+        
+        <div class="lp">17.</div>
+        <section class="grid-container grid-signature">
+            <section class="grid-row">
+                <div class="color full-width">Osoba sporządzająca wniosek</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width blank"></div>
+            </section>
+            <section class="grid-row">
+                <div class="color center">podpis i pieczęć osoby sporządzającej wniosek</div>
+                <div class="color center border-left">data</div>
+            </section>
+        </section>
+        
+        <div class="lp">18.</div>
+        <section class="grid-container grid-signature">
+            <section class="grid-row">
+                <div class="color full-width">Zatwierdzenie wniosku przez wnioskodawcę</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width blank"></div>
+            </section>
+            <section class="grid-row">
+                <div class="color center">podpis i pieczęć wnioskodawcy</div>
+                <div class="color center border-left">data</div>
+            </section>
+        </section>
+
+        <section class="full-width border-left grid-container grid-signature">
+            <section class="grid-row">
+                <div class="full-width color center">Opinia osoby wskazanej w decyzji przedstawiciela zamawiającego/pełnomocnika ds. zamówień publicznych/kierownika (zastępcy kierownika) Działu Logistyki i Zakupów</div>
+            </section>
+            <section class="grid-row">
+                <div class="full-width blank2"></div>
+            </section>
+            <section class="grid-row">
+                <div class="color center">podpis i pieczęć</div>
+                <div class="color center border-left">data</div>
+            </section>
+        </section>
+
+        <section class="full-width border-left border-bottom grid-container grid-signature">
+            <section class="grid-row">
+                <div class="full-width color center">Decyzja w sprawie wszczęcia procedury/postępowania o udzielenie zamówienia publicznego</div>
+            </section>
+            <section class="grid-row">
+                <label class="full-width block">
+                    <input type="checkbox" class="checkbox-input" disabled>
+                    <span class="checkbox"></span>nie wyrażam zgody na wszczęcie - odpowiednio do wniosku - procedury/postępowania o udzielenie zamówienia
+                </label>
+            </section>
+            <section class="grid-row">
+                <label class="full-width block line-height">
+                    <input type="checkbox" class="checkbox-input" disabled>
+                    <span class="checkbox"></span>wyrażam zgodę na wszczęcie - odpowiednio do wniosku - procedury/postępowania o udzielenie zamówienia, ustalam tryb udzielenia zamówienia:
+                </label>
+            </section>
+            <section class="grid-row">
+                <div class="full-width blank"></div>
+            </section>
+            <section class="grid-row">
+                <div class="color center">podpis i pieczęć przedstawiciela zamawiającego</div>
+                <div class="color center border-left">data</div>
+            </section>
+        </section>
+        <button type="button" id="download">Generuj PDF</button>
+
+    </form>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('download').addEventListener('click', async () => {
+            const content = document.body.outerHTML;
+
+            const response = await fetch('/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content })
+            });
+            
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = '';
+            link.click();
+        });
+    </script>
+</body>
+</html>
