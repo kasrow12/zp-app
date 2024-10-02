@@ -285,10 +285,13 @@ section#xdd:hover::after {
 .czesci .bez-czesci-row {
     display: none;
 }
-.bez-czesci #kwota_przeznaczona {
+.bez-czesci #kwota_przeznaczona_calosc {
     grid-row: span 2;
     border-bottom: 0;
 }
-.czesci #kwota_przeznaczona {
+.czesci #kwota_przeznaczona_calosc {
     justify-content: end;
+}
+.just-right {
+    justify-content: flex-end;
 }

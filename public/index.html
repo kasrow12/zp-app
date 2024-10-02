@@ -15,6 +15,7 @@
         <input type="checkbox" id="admin" onchange="adminHandler()">
         Admin
     </label>
+    <button type="button" id="download" style="padding: 1em">Generuj PDF</button>
     <form class="container bez-czesci" id="container" action="#">
         <div class="lp">Lp.</div>
         <div class="center color">Wniosek o udzielenie zamówienia publicznego</div>
@@ -24,14 +25,14 @@
         <div class="lp">1.</div>
         <section class="two-column">
             <div class="color">Nazwa jednostki wnioskodawcy</div>
-            <input class="input-box" id="nazwa_jednostki" value="Politechnika Warszawska Samorząd Studentów" disabled>
+            <input class="input-box" id="nazwa_jednostki" name="nazwa_jednostki" value="Politechnika Warszawska Samorząd Studentów" disabled>
         </section>
 
         <div class="lp">2.</div>
         <section class="two-column">
             <div class="color">Nazwa zamówienia publicznego (przedmiotu zamówienia)</div>
             <div class="input" id="nazwa_zamowienia_text">Zakup pionu zasilającego do zasilania stanowiska realizatorskiego dla studentów zasilającego do zasilania stanowiska realizatorskiego dla studentów PW</div>
-            <input type="hidden" id="nazwa_zamowienia">
+            <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia">
         </section>
 
         <div class="lp">3.</div>
@@ -39,17 +40,17 @@
             <div class="color">Rodzaj zamówienia</div>
             <section class="flex-container input">
                 <label>
-                    <input type="radio" id="rodzaj_roboty" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()">
+                    <input type="radio" id="rodzaj_roboty" class="checkbox-input" name="rodzaj_zamowienia" value="rodzaj_roboty" onchange="rodzajeHandler()">
                     <span class="checkbox"></span>
                     <p>roboty budowlane</p>
                 </label>
                 <label>
-                    <input type="radio" id="rodzaj_dostawy" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()" checked>
+                    <input type="radio" id="rodzaj_dostawy" class="checkbox-input" name="rodzaj_zamowienia" value="rodzaj_dostawy" onchange="rodzajeHandler()" checked>
                     <span class="checkbox"></span>
                     <p>dostawy</p>
                 </label>
                 <label>
-                    <input type="radio" id="rodzaj_uslugi" class="checkbox-input" name="rodzaj_zamowienia" onchange="rodzajeHandler()">
+                    <input type="radio" id="rodzaj_uslugi" class="checkbox-input" name="rodzaj_zamowienia" value="rodzaj_uslugi" onchange="rodzajeHandler()">
                     <span class="checkbox"></span>
                     <p>usługi</p>
                 </label>
@@ -60,26 +61,26 @@
         <div class="color">Wspólny Słownik Zamówień</div>
         <div class="lp">4.1.</div>
         <div class="input-padding-right">
-            <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv_text" value="31000000-6">
+            <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv" name="glowny_cpv" value="31000000-6">
         </div>
         
         <div class="lp">4.2.</div>
         <div class="input-padding-right">
             <span>Dodatkowe kody CPV:</span><span class="input" id="dodatkowe_cpv_text">31700000-3, 44300000-3</span>
-            <input type="hidden" id="dodatkowe_cpv">
+            <input type="hidden" name="dodatkowe_cpv" id="dodatkowe_cpv">
         </div>
 
         <div class="lp">5.</div>
         <section class="two-column">
             <div class="color">Kategoria usług <span class="small">(dotyczy usług)</span></div>
-            <input class="input-box" id="kategoria_uslug" disabled>
+            <input class="input-box" name="kategoria_uslug" id="kategoria_uslug" disabled>
         </section>
 
         <div class="lp">6.</div>
         <div class="color">Ujęcie zamówienia w planie zamówień</div>
         <div class="lp">6.1.</div>
         <label class="flex input">
-            <input type="radio" id="plan_zamowien_nie" class="checkbox-input" name="plan_zamowien" onchange="planZamowienHandler()">
+            <input type="radio" id="plan_zamowien_nie" class="checkbox-input" name="plan_zamowien" value="plan_zamowien_nie" onchange="planZamowienHandler()">
             <span class="checkbox"></span>
             <p>nie</p>
         </label>
@@ -88,18 +89,18 @@
         <section class="grid-container grid-6-2 borders" id="plan_zamowien_tak_container">
             <section class="grid-row">
                 <label class="flex input">
-                    <input type="radio" id="plan_zamowien_tak" class="checkbox-input" name="plan_zamowien" onchange="planZamowienHandler()" checked>
+                    <input type="radio" id="plan_zamowien_tak" class="checkbox-input" name="plan_zamowien" value="plan_zamowien_tak" onchange="planZamowienHandler()" checked>
                     <span class="checkbox"></span>
                     <p>tak</p>
                 </label>
                 <div class="color center">rok</div>
-                <input class="input-box center" id="plan_zamowien_rok" value="2023">
+                <input class="input-box center" name="plan_zamowien_rok" id="plan_zamowien_rok" value="2023">
                 <div class="color center">oznaczenie planu, pozycja</div>
                 <div class="listing" id="plan_zamowien_oznaczenia_text">AC poz. 21</div>
-                <input type="hidden" id="plan_zamowien_oznaczenia">
+                <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
                 <div class="color center">wartość w planie</div>
                 <div class="money" id="plan_zamowien_wartosci_text">2 137,00 zł</div>
-                <input type="hidden" id="plan_zamowien_wartosci">
+                <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
             </section>
         </section>
 
@@ -118,9 +119,9 @@
                     <span class="checkbox"></span>
                     <p>zamówienia</p>
                 </label>
-                <input class="money input input-box" id="wartosc_zamowienia" value="31 549,60">
+                <input class="money input input-box" name="wartosc_zamowienia" id="wartosc_zamowienia" value="31 549,60">
                 <div class="color">zł, co stanowi równowartość</div>
-                <input class="money input input-box" id="wartosc_zamowienia_euro" value="7 634,99">
+                <input class="money input input-box" name="wartosc_zamowienia_euro" id="wartosc_zamowienia_euro" value="7 634,99">
                 <div class="color">euro</div>
             </section>
 
@@ -154,34 +155,35 @@
             </section>
             <section class="grid-row no-borders">
                 <label class="full-width">
-                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_nie" class="checkbox-input" onchange="zamowieniePzpHandler()" checked disabled>
+                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_nie" class="checkbox-input" value="zamowienie_pzp_nie" onchange="zamowieniePzpHandler()" checked disabled>
                     <span class="checkbox"></span>
                     <p>nie</p>
                 </label>
             </section>
             <section class="grid-row no-borders">
                 <label class="full-width">
-                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_tak" class="checkbox-input" onchange="zamowieniePzpHandler()" disabled>
+                    <input type="radio" name="zamowienie_pzp" id="zamowienie_pzp_tak" class="checkbox-input" value="zamowienie_pzp_tak" onchange="zamowieniePzpHandler()" disabled>
                     <span class="checkbox"></span>
                     <p>tak</p>
                 </label>
             </section>
             <section class="grid-row no-borders">
                 <div class="full-width block input-padding-right">
-                    wartość łączna części zamówienia dotychczas udzielonych z zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych <span id="zamowienie_pzp_kwota">... zł</span>
+                    wartość łączna części zamówienia dotychczas udzielonych z zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych <span id="zamowienie_pzp_kwota_text">... zł</span>
+                    <input type="hidden" name="zamowienie_pzp_kwota" id="zamowienie_pzp_kwota">
                 </div>
             </section>
         </section>
 
         <div class="lp">8.</div>
         <div class="input-padding-right">
-            <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" id="dzien_zamowienia" value="02.04.2024">
+            <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" name="dzien_zamowienia" id="dzien_zamowienia" value="02.04.2024">
         </div>
 
         <div class="lp">9.</div>
         <div class="input-padding-right">
             <span>Podstawa ustalenia wartości zamówienia <span class="small">(wskazać odpowiedni dokument, np. planowane koszty, kosztorys inwestorski, program funkcjonalno-użytkowy)</span>:</span><span class="input" id="podstawa_ust_wartosci_text">rozeznanie rynku, porównanie ofert</span>
-            <input type="hidden" id="podstawa_ust_wartosci">
+            <input type="hidden" name="podstawa_ust_wartosci" id="podstawa_ust_wartosci">
         </div>
         <!-- tutaj lepiej te ceny ustawic -->
         <div class="lp">10.</div>
@@ -190,7 +192,7 @@
                 <div class="color block full-width">Kwota brutto <span class="small">(wartość zamówienia łącznie z należnymi opłatami, w tym VAT)</span></div>
             </section>
             <section class="grid-row bez-czesci-row">
-                <input class="full-width input input-box" id="wartosc_brutto" value="100 233,00 zł">
+                <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto" value="100 233,00 zł">
             </section>
             <section class="grid-row czesci-row">
                 <div class="nowrap"></div>
@@ -217,16 +219,17 @@
                 <div class="color full-width">Kwota przeznaczona na sfinansowanie zamówienia</div>
             </section>
             <section class="grid-row">
-                <div class="input center" id="kwota_przeznaczona">21 000,00 zł</div>
+                <input class="input center input-box" name="kwota_przeznaczona_calosc" id="kwota_przeznaczona_calosc" value="21 000,00 zł">
                 <div class="color">źródła finansowania</div>
                 <div class="color right">kwoty</div>
             </section>
             
             <section class="grid-row bez-czesci-row">
                 <section class="grid-11-row grid-row">
-                    <div class="input listing left" id="kwota_przeznaczona_zrodlo" contenteditable="true">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
-                    <div class="money input-padding-right">
-                        <div class="input" id="kwota_przeznaczona">6 000,00 zł</div>
+                    <div class="input listing left" id="kwota_przeznaczona_zrodlo_text">ŚnDS Pikniki<br>Wniosek nr 0071/2024</div>
+                    <input type="hidden" name="kwota_przeznaczona_zrodlo" id="kwota_przeznaczona_zrodlo">
+                    <div class="input-padding-right just-right">
+                        <input class="money input input-box" name="kwota_przeznaczona" id="kwota_przeznaczona" value="6 000,00 zł">
                     </div>
                 </section>
             </section>
@@ -285,16 +288,14 @@
         <div class="lp">13.</div>
         <div class="input-padding-right">
             <span>Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie<br>gdy jest to uzasadnione obiektywną przyczyną)</span>:</span><span class="input" id="termin_wykonania_text">23.05.2024 r.</span>
-            <input type="hidden" id="termin_wykonania">
+            <input type="hidden" name="termin_wykonania" id="termin_wykonania">
         </div>
 
         <div class="lp">14.</div>
         <section>
                 <div>Informacje dodatkowe <span class="small">(jeżeli dotyczy, np. nazwy potencjalnych wykonawców, itd.)</span>:</div>
-                <div class="input line-height" id="informacje_dodatkowe_text">Rozliczenie przez fakturę VAT   
-Podmiot, do którego zamierza się wystąpić z ofertą: XXX
-Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
-            <input type="hidden" id="informacje_dodatkowe">
+                <div class="input line-height" id="informacje_dodatkowe_text">Rozliczenie przez fakturę VAT<br>Podmiot, do którego zamierza się wystąpić z ofertą: XXX<br>Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
+            <input type="hidden" name="informacje_dodatkowe" id="informacje_dodatkowe">
             <!-- <section class="grid-row">
                 <div class="full-width">Rozliczenie przez fakturę VAT</div>
             </section>
@@ -316,12 +317,11 @@ Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
         </section>
         
         <div class="lp">15.</div>
-        <div class="input-padding-left">
-            <span class="padding-left">Załączniki do wniosku: oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</span>
-            <br>
-            <span class="input" id="zalaczniki_text">Dokument z ustalenia wartości zamówienia</span>
-            <input type="hidden" id="zalaczniki">
-        </div>
+        <section>
+            <div class="padding-left">Załączniki do wniosku: oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</div>
+            <div class="input" id="zalaczniki_text">Dokument z ustalenia wartości zamówienia</div>
+            <input type="hidden" name="zalaczniki" id="zalaczniki">
+        </section>
 
         <div class="lp">16.</div>
         <div class="color">Procedura/tryb <span class="small">(zaznaczyć pole wyboru w 16.1. lub w 16.2. – w tym przypadku obligatoryjnie uzupełnić część B)</span></div>
@@ -413,28 +413,8 @@ Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
                 <div class="color center border-left">data</div>
             </section>
         </section>
-        <button type="button" id="download">Generuj PDF</button>
 
     </form>
     <script src="script.js"></script>
-    <script>
-        document.getElementById('download').addEventListener('click', async () => {
-            const content = document.body.outerHTML;
-
-            const response = await fetch('/generate-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ content })
-            });
-            
-            const blob = await response.blob();
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = '';
-            link.click();
-        });
-    </script>
 </body>
 </html>
