@@ -7,8 +7,8 @@ body {
     font-family: 'Times New Roman', Times, serif;
     font-size: 29px;
     width: 42cm;
-    --background: #64807c;
-    /* --background: #b48970; */
+    /* --background: #64807c; */
+    --background: #fcffba;
 }
 div, section {
     break-inside: avoid-page;
@@ -221,7 +221,7 @@ form > * {
     display: block;
 }
 
-.czesci_checkbox {
+.no-print {
     display: none;
 }
 @media screen {
@@ -231,7 +231,7 @@ form > * {
     .input {
         background-color: rgb(246, 221, 192);
     }
-    .czesci_checkbox {
+    .no-print {
         display: inline-block;
         border: 1px solid black;
     }
@@ -294,4 +294,30 @@ section#xdd:hover::after {
 }
 .just-right {
     justify-content: flex-end;
+}
+.notes {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 21px;
+    margin-top: 3em;
+    text-align: justify;
+}
+.notes::before {
+    content: ' ';
+    display: block;
+    width: 25%;
+    height: 2px;
+    background-color: black;
+    position: relative;
+    top: -0.5em;
+    left: 0;
+}
+sup {
+    font-size: 0.6em;
+}
+
+#download {
+    padding: 1em;
+    font-size: 28px;
+    
 }

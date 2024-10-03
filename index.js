@@ -1,7 +1,7 @@
 const express = require('express');
 const puppeteer = require('puppeteer');
 const path = require('path');
-const fs = require('fs');
+const validator = require('validator');
 
 const app = express();
 const port = 3000;
@@ -11,13 +11,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/generate-pdf', async (req, res) => {
-    console.log("🚀 ~ app.post ~ req.body:", req.body);
+    console.log("🚀 ~ req.body:", req.body);
 
+    // navigate to the default form
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const filePath = `file:${path.join(__dirname, 'public', 'index.html')}`;
     await page.goto(filePath);
 
+    // fill the form with the data from the request
     await page.evaluate((body) => {
         document.getElementById('nazwa_jednostki').value = body.nazwa_jednostki;
         document.getElementById('nazwa_zamowienia_text').textContent = body.nazwa_zamowienia;
@@ -52,29 +54,9 @@ app.post('/generate-pdf', async (req, res) => {
         document.getElementById('termin_wykonania_text').textContent = body.termin_wykonania;
         document.getElementById('informacje_dodatkowe_text').textContent = body.informacje_dodatkowe;
         document.getElementById('zalaczniki_text').textContent = body.zalaczniki;
-
     }, req.body);
 
-    // const htmlContent = `
-    //     <!DOCTYPE html>
-    //     <html lang="pl">
-    //     <head>
-    //         <meta charset="UTF-8">
-    //         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //         <title>Wniosek o udzielenie zamówienia publicznego</title>
-    //     </head>
-    //     ${content}
-    //     </html>
-    // `;
-
-    // await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-
-    // const cssFilePath = path.join(__dirname, 'public', 'style.css');
-    // const css = await fs.promises.readFile(cssFilePath, 'utf8');
-    // await page.addStyleTag({ content: css });
-
-    // console.log(htmlContent);
-
+    // generate the PDF
     const pdfBuffer =  await page.pdf({
         path: 'zp.pdf',
         scale: 0.5,
@@ -89,13 +71,15 @@ app.post('/generate-pdf', async (req, res) => {
         displayHeaderFooter: true,
         headerTemplate: `<div></div>`,
         footerTemplate: `
-        <div style="font-size: 10px; width: 100%; text-align: center; padding-top: 5px;">
-            <span style="font-size: 10px;"><span class="pageNumber"></span> z <span class="totalPages"></span></span>
+        <div style="font-size: 9px; width: 80%; margin: 0 auto; padding-bottom: 1em;">
+            <div style="text-align: center;"><span class="pageNumber"></span> z <span class="totalPages"></span></div>
+            <div>Nazwa zamówienia publicznego (z lp. 2 wniosku): ${validator.escape(req.body.nazwa_zamowienia)}</div>
         </div>`
     });
 
     await browser.close();
 
+    // send the PDF as a response
     res.set({
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename=ZP.pdf',
@@ -105,7 +89,6 @@ app.post('/generate-pdf', async (req, res) => {
     res.end(pdfBuffer);
 });
 
-// Start serwera
-app.listen(port, () => {
-    console.log(`Aplikacja działa na http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`[ZP-APP] Working on localhost:${port}`);
 });

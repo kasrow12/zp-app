@@ -7,18 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <label class="czesci_checkbox">
+    
+    <label class="no-print" style="font-size: 18px;">
         <input type="checkbox" id="czesci" onchange="document.getElementById('container').classList.toggle('bez-czesci'); document.getElementById('container').classList.toggle('czesci')">
-        Czy części?
+        Czy części? <b>[Work in progress]</b>
     </label>
-    <label class="czesci_checkbox">
+    <label class="no-print" style="font-size: 18px;">
         <input type="checkbox" id="admin" onchange="adminHandler()">
         Admin
     </label>
-    <button type="button" id="download" style="padding: 1em">Generuj PDF</button>
+    <button class="no-print" type="button" id="download">Generuj PDF</button>
     <form class="container bez-czesci" id="container" action="#">
         <div class="lp">Lp.</div>
-        <div class="center color">Wniosek o udzielenie zamówienia publicznego</div>
+        <div class="center color">Wniosek o udzielenie zamówienia publicznego<sup>1</sup></div>
 
         <div class="full-width section_spacer color">Część A</div>
 
@@ -340,8 +341,7 @@
         <div class="lp">16.2.</div>
         <div class="line-height">
             <input type="checkbox" class="checkbox-input" disabled>
-            <span class="checkbox"></span><!--
-            -->Tryb udzielenia zamówienia:
+            <span class="checkbox"></span>Tryb udzielenia zamówienia:<sup>2</sup>
             <br>
             Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:
             <br>
@@ -413,8 +413,12 @@
                 <div class="color center border-left">data</div>
             </section>
         </section>
-
+        
     </form>
+    <div class="notes">
+        <div><sup>1</sup> Należy wypełnić rubryki w kolorze białym, wskazane uzupełnienie na urządzeniu elektronicznym.</div>
+        <div><sup>2</sup> Należy wskazać spośród listy: tryb podstawowy – bez negocjacji (art. 275 pkt 1 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje fakultatywne (art. 275 pkt 2 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje obligatoryjne (art. 275 pkt 3 ustawy Prawo zamówień publicznych); partnerstwo innowacyjne; negocjacje bez ogłoszenia; zamówienie z wolnej ręki; konkurs; umowa ramowa; przetarg nieograniczony; przetarg ograniczony; negocjacje z ogłoszeniem; dialog konkurencyjny; dynamiczny system zakupów.</div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

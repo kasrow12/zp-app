@@ -10,7 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.17.1",
-    "puppeteer": "^13.0.0"
+    "express": "^4.21.0",
+    "puppeteer": "^23.5.0",
+    "validator": "^13.12.0"
   }
 }
