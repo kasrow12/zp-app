@@ -110,6 +110,11 @@ document.getElementById('download').addEventListener('click', async () => {
         },
         body: formBody
     });
+
+    if (response.status !== 200) {
+        alert('Wystąpił błąd podczas generowania wniosku');
+        return;
+    }
     
     const blob = await response.blob();
     const link = document.createElement('a');
