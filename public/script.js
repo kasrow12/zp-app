@@ -6,26 +6,34 @@ const dontAllowLinebreaks = (evt) => {
 
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
-function rodzajeHandler() {
-    kategorieUslug.classList.toggle("input", uslugiCheckbox.checked);
-    kategorieUslug.classList.toggle("hidden", !uslugiCheckbox.checked);
-    kategorieUslug.disabled = !uslugiCheckbox.checked;
-}
-
 const planZamowienTak = document.getElementById("plan_zamowien_tak");
 const planZamowienRok = document.getElementById("plan_zamowien_rok");
 const planZamowienOznaczenia = document.getElementById("plan_zamowien_oznaczenia_text");
 const planZamowienWartosci = document.getElementById("plan_zamowien_wartosci_text");
+
+// 5. Handler
+function rodzajeHandler() {
+    const czyUslugi = uslugiCheckbox.checked;
+    kategorieUslug.classList.toggle("input", czyUslugi);
+    kategorieUslug.classList.toggle("hidden", !czyUslugi);
+    kategorieUslug.disabled = !czyUslugi;
+}
+
+// 6.2. Handler 
 function planZamowienHandler() {
-    planZamowienRok.classList.toggle("hidden", !planZamowienTak.checked);
-    planZamowienOznaczenia.classList.toggle("hidden", !planZamowienTak.checked);
-    planZamowienWartosci.classList.toggle("hidden", !planZamowienTak.checked);
-    planZamowienRok.classList.toggle("input", planZamowienTak.checked);
-    planZamowienOznaczenia.classList.toggle("input", planZamowienTak.checked);
-    planZamowienWartosci.classList.toggle("input", planZamowienTak.checked);
-    planZamowienRok.disabled = !planZamowienTak.checked;
-    planZamowienOznaczenia.contentEditable = planZamowienTak.checked;
-    planZamowienWartosci.contentEditable = planZamowienTak.checked;
+    const visible = planZamowienTak.checked;
+
+    planZamowienRok.classList.toggle("input", visible);
+    planZamowienRok.classList.toggle("hidden", !visible);
+    planZamowienRok.disabled = !visible;
+
+    planZamowienOznaczenia.classList.toggle("input", visible);
+    planZamowienOznaczenia.classList.toggle("hidden", !visible);
+    planZamowienOznaczenia.contentEditable = visible;
+
+    planZamowienWartosci.classList.toggle("input", visible);
+    planZamowienWartosci.classList.toggle("hidden", !visible);
+    planZamowienWartosci.contentEditable = visible;
 }
 planZamowienHandler();
 
