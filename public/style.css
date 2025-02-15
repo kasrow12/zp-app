@@ -195,12 +195,13 @@ form > * {
 
 .grid-6-2 {
     grid-template-columns: 3fr 2fr 2fr 7fr 6fr 5fr 5fr;
-    grid-template-columns: 9% 6% 8% 24% 21% 17% 15%;
+    grid-template-columns: max-content max-content 7ch max-content 1fr max-content 15ch;
 }
 
 .grid-7 {
     grid-template-columns: auto min-content min-content min-content min-content;
     grid-template-columns: 42% 13% 26% 13% 6%;
+    grid-template-columns: 1fr 13ch max-content 13ch max-content;
 }
 
 .grid-10 {

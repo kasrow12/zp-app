@@ -50,7 +50,7 @@
         </section>
 
         <div class="lp">3.</div>
-        <section class="two-column borders">
+        <section class="two-column">
             <div class="color">Rodzaj zamówienia</div>
             <section class="flex-container input">
                 <label>
@@ -59,13 +59,13 @@
                     <span class="checkbox"></span>
                     <p>roboty budowlane</p>
                 </label>
-                <label>
+                <label class="border-left">
                     <input type="radio" id="rodzaj_dostawy" class="checkbox-input" name="rodzaj_zamowienia"
                         value="rodzaj_dostawy" onchange="rodzajeHandler()" checked>
                     <span class="checkbox"></span>
                     <p>dostawy</p>
                 </label>
-                <label>
+                <label class="border-left">
                     <input type="radio" id="rodzaj_uslugi" class="checkbox-input" name="rodzaj_zamowienia"
                         value="rodzaj_uslugi" onchange="rodzajeHandler()">
                     <span class="checkbox"></span>
@@ -119,8 +119,8 @@
                 <div class="listing" id="plan_zamowien_oznaczenia_text">AC poz. 21</div>
                 <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
                 <div class="color center">wartość w planie</div>
-                <div class="money" id="plan_zamowien_wartosci_text">2 137,00 zł</div>
                 <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
+                <div class="money" id="plan_zamowien_wartosci_text">2 137,00 zł</div>
             </section>
         </section>
 
@@ -140,10 +140,10 @@
                     <p>zamówienia</p>
                 </label>
                 <input class="money input input-box" name="wartosc_zamowienia" id="wartosc_zamowienia"
-                    value="31 549,60">
+                    value="31 549,60" maxlength="10">
                 <div class="color">zł, co stanowi równowartość</div>
                 <input class="money input input-box" name="wartosc_zamowienia_euro" id="wartosc_zamowienia_euro"
-                    value="7 634,99">
+                    value="7 634,99" maxlength="10">
                 <div class="color">euro</div>
             </section>
 
@@ -359,10 +359,12 @@
                 </div>
             </section> -->
         </section>
-
+        
+        <!-- to do: co musi być od razu wpisane
+        zabawa żeby nie było w drugiej linijce -->
         <div class="lp">15.</div>
         <section>
-            <div class="padding-left">Załączniki do wniosku: oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</div>
+            <div class="padding-left">Załączniki do wniosku: opis przedmiotu zamówienia, oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</div>
             <div class="input" id="zalaczniki_text">Dokument z ustalenia wartości zamówienia</div>
             <input type="hidden" name="zalaczniki" id="zalaczniki">
         </section>
