@@ -7,10 +7,11 @@ const dontAllowLinebreaks = (evt) => {
 
 const czesciCheckbox = document.getElementById("czesci");
 function czesciHandler() {
-    document.getElementById("container").classList.toggle("bez-czesci");
-    document.getElementById("container").classList.toggle("czesci");
+    document.getElementById("mainForm").classList.toggle("bez-czesci");
+    document.getElementById("mainForm").classList.toggle("czesci");
     document.getElementById("czesci-counter").classList.toggle("display-none");
 }
+// czesciHandler();
 
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
@@ -57,10 +58,10 @@ function zamowieniePzpHandler() {
 document
     .querySelectorAll(
         "#dodatkowe_cpv_text, " +
-            "#termin_wykonania_text, " +
-            "#kwota_przeznaczona_1, #kwota_przeznaczona_2, " +
-            "#wartosc_brutto_1, #wartosc_brutto_2, #wartosc_zamowienia_1, " +
-            "#wartosc_zamowienia_2, #wartosc_zamowienia_euro_1,  #wartosc_zamowienia_euro_2"
+        "#termin_wykonania_text, " +
+        "#kwota_przeznaczona_1, #kwota_przeznaczona_2, " +
+        "#wartosc_brutto_1, #wartosc_brutto_2, #wartosc_zamowienia_1, " +
+        "#wartosc_zamowienia_2, #wartosc_zamowienia_euro_1,  #wartosc_zamowienia_euro_2"
     )
     .forEach((e) => {
         try {
@@ -73,10 +74,10 @@ document
 document
     .querySelectorAll(
         "#nazwa_zamowienia_text, #podstawa_ust_wartosci_text, #zalaczniki_text, #kwota_przeznaczona_zrodlo_text," +
-            "#informacje_dodatkowe_text, " +
-            "#kwota_przeznaczona_nazwa_1, #kwota_przeznaczona_zrodlo_1, " +
-            "#kwota_przeznaczona_nazwa_2, #kwota_przeznaczona_zrodlo_2, " +
-            "#wartosc_nazwa_1, #wartosc_nazwa_2"
+        "#informacje_dodatkowe_text, " +
+        "#kwota_przeznaczona_nazwa_1, #kwota_przeznaczona_zrodlo_1, " +
+        "#kwota_przeznaczona_nazwa_2, #kwota_przeznaczona_zrodlo_2, " +
+        "#wartosc_nazwa_1, #wartosc_nazwa_2"
     )
     .forEach((e) => {
         try {
@@ -100,37 +101,18 @@ function adminHandler() {
 }
 
 document.getElementById("download").addEventListener("click", async () => {
-    document.getElementById("nazwa_zamowienia").value =
-        document.getElementById("nazwa_zamowienia_text").innerText;
-    document.getElementById("dodatkowe_cpv").value =
-        document.getElementById("dodatkowe_cpv_text").innerText;
-    document.getElementById("plan_zamowien_oznaczenia").value = document.getElementById(
-        "plan_zamowien_oznaczenia_text"
-    ).innerText;
-    document.getElementById("plan_zamowien_wartosci").value = document.getElementById(
-        "plan_zamowien_wartosci_text"
-    ).innerText;
-    document.getElementById("zamowienie_pzp_kwota").value = document.getElementById(
-        "zamowienie_pzp_kwota_text"
-    ).innerText;
-    document.getElementById("podstawa_ust_wartosci").value = document.getElementById(
-        "podstawa_ust_wartosci_text"
-    ).innerText;
-    document.getElementById("kwota_przeznaczona_zrodlo").value = document.getElementById(
-        "kwota_przeznaczona_zrodlo_text"
-    ).innerText;
-    document.getElementById("termin_wykonania").value =
-        document.getElementById("termin_wykonania_text").innerText;
-    document.getElementById("informacje_dodatkowe").value = document.getElementById(
-        "informacje_dodatkowe_text"
-    ).innerText;
-    document.getElementById("zalaczniki").value =
-        document.getElementById("zalaczniki_text").innerText;
+    // Setup the form data, get values form the visible fields with content-editable
+    document.querySelectorAll("[type=hidden]").forEach((e) => {
+        const visible = document.getElementById(e.id + "_text");
+        if (visible) {
+            e.value = visible.innerText;
+        }
+    });
 
-    const form = document.getElementById("container");
-
+    const form = document.getElementById("mainForm");
     const formData = new FormData(form);
 
+    // Add disabled inputs to the form data, not included in the form by default
     const disabledInputs = document.querySelectorAll(
         ".input-box:disabled, .checkbox-input:disabled:checked"
     );
@@ -159,3 +141,10 @@ document.getElementById("download").addEventListener("click", async () => {
     link.download = "wniosek.pdf";
     link.click();
 });
+
+const rowTemplate = document.getElementById("rowTemplate");
+function addRow(elem) {
+    const row = elem.parentElement.parentElement;
+    const newRow = rowTemplate.cloneNode(true);
+    row.parentElement.insertBefore(newRow, row.nextSibling);
+}

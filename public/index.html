@@ -9,7 +9,6 @@
 </head>
 
 <body>
-
     <label class="no-print" style="font-size: 18px;">
         <input type="checkbox" id="czesci" onchange="czesciHandler()">
         Czy części? <b>[Work in progress]</b>
@@ -25,7 +24,9 @@
         <input type="number" id="ilosc_czesci" class="czesci-input" value="2" min="1">
         <button type="button" id="czesci-button" class="czesci-input">Zatwierdź</button>
     </label>
-    <form class="container bez-czesci" id="container" action="#">
+
+    <!-- Main form -->
+    <form class="container bez-czesci" id="mainForm" action="#">
         <div class="lp">Lp.</div>
         <div class="center color">Wniosek o udzielenie zamówienia publicznego<sup>1</sup></div>
 
@@ -41,7 +42,10 @@
         <div class="lp">2.</div>
         <section class="two-column">
             <div class="color">Nazwa zamówienia publicznego (przedmiotu zamówienia)</div>
-            <div class="input" id="nazwa_zamowienia_text">Zakup pionu zasilającego do zasilania stanowiska realizatorskiego dla studentów zasilającego do zasilania stanowiska realizatorskiego dla studentów PW</div>
+            <div class="input" id="nazwa_zamowienia_text">Zakup pionu zasilającego do <!--
+                -->zasilania stanowiska realizatorskiego dla studentów zasilającego do zasilania stanowiska <!--
+                -->realizatorskiego dla studentów PW<!--
+            --></div>
             <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia">
         </section>
 
@@ -75,7 +79,7 @@
         <div class="lp">4.1.</div>
         <div class="input-padding-right">
             <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv" name="glowny_cpv"
-                value="31000000-6">
+                value="15981320-7" maxlength="10" required>
         </div>
 
         <div class="lp">4.2.</div>
@@ -110,7 +114,7 @@
                     <p>tak</p>
                 </label>
                 <div class="color center">rok</div>
-                <input class="input-box center" name="plan_zamowien_rok" id="plan_zamowien_rok" value="2023">
+                <input class="input-box center" name="plan_zamowien_rok" id="plan_zamowien_rok" value="2025" maxlength="4">
                 <div class="color center">oznaczenie planu, pozycja</div>
                 <div class="listing" id="plan_zamowien_oznaczenia_text">AC poz. 21</div>
                 <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
@@ -198,7 +202,7 @@
         <div class="lp">8.</div>
         <div class="input-padding-right">
             <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" name="dzien_zamowienia"
-                id="dzien_zamowienia" value="02.04.2024">
+                id="dzien_zamowienia" value="02.04.2024" maxlength="13">
         </div>
 
         <div class="lp">9.</div>
@@ -206,20 +210,14 @@
             <span>Podstawa ustalenia wartości zamówienia <span class="small">(wskazać odpowiedni dokument, np. planowane koszty, kosztorys inwestorski, program funkcjonalno-użytkowy)</span>:</span><span class="input" id="podstawa_ust_wartosci_text">rozeznanie rynku, porównanie ofert</span>
             <input type="hidden" name="podstawa_ust_wartosci" id="podstawa_ust_wartosci">
         </div>
-        <!-- tutaj lepiej te ceny ustawic -->
         <div class="lp">10.</div>
         <section class="grid-container grid-10 no-borders">
             <section class="grid-row">
                 <div class="color block full-width">Kwota brutto <span class="small">(wartość zamówienia łącznie z należnymi opłatami, w tym VAT)</span></div>
             </section>
-            <section class="grid-row bez-czesci-row">
+            <section class="grid-row">
                 <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto"
                     value="100 233,00 zł">
-            </section>
-            <section class="grid-row czesci-row">
-                <div class="nowrap"></div>
-                <div class="input money" id="wartosc_brutto_1">64 263,40 zł</div>
-                <div class="filler"></div>
             </section>
             <section class="grid-row czesci-row">
                 <div class="nowrap">Część 1:</div>
@@ -247,17 +245,30 @@
                 <div class="color right">kwoty</div>
             </section>
 
-            <section class="grid-row bez-czesci-row">
-                <section class="grid-11-row grid-row">
-                    <div class="input listing left" id="kwota_przeznaczona_zrodlo_text">ŚnDS Pikniki<br>Wniosek nr 0071/2024</div>
-                    <input type="hidden" name="kwota_przeznaczona_zrodlo" id="kwota_przeznaczona_zrodlo">
-                    <div class="input-padding-right just-right">
-                        <input class="money input input-box" name="kwota_przeznaczona" id="kwota_przeznaczona"
-                            value="6 000,00 zł">
-                    </div>
-                </section>
+            <section class="grid-11-row grid-row bez-czesci-row">
+                <div class="input listing left" id="kwota_przeznaczona_zrodlo_text">ŚnDS Pikniki<br>Wniosek nr 0071/2024</div>
+                <input type="hidden" name="kwota_przeznaczona_zrodlo" id="kwota_przeznaczona_zrodlo">
+                <div class="input-padding-right just-right">
+                    <input class="money input input-box kwota" name="kwota_przeznaczona" id="kwota_przeznaczona"
+                        value="6 000,00 zł">
+                </div>
             </section>
 
+
+            <!-- templates -->
+            <div style="display: none;">
+                <section class="grid-row" id="rowTemplate">
+                    <section class="block with-add-row">
+                        <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">XD Pikniki <br> Wniosek nr 0071/2024</div>
+                        <span class="add-row" onclick="addRow(this)">+</span>
+                    </section>
+                    <div class="money input-padding-right">
+                        <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- części -->
             <section class="grid-row czesci-row">
                 <div class="mult-flex-row3 input-padding-right">
                     <div>Część 1:</div>
@@ -265,15 +276,21 @@
                 </div>
                 <section class="grid-11-row">
                     <section class="grid-row">
-                        <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <section class="block with-add-row">
+                            <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                            <span class="add-row" onclick="addRow(this)">+</span>
+                        </section>
                         <div class="money input-padding-right">
                             <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
                         </div>
                     </section>
                     <section class="grid-row">
-                        <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <section class="block with-add-row">
+                            <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                            <span class="add-row" onclick="addRow(this)">+</span>
+                        </section>
                         <div class="money input-padding-right">
-                            <div class="input" id="kwota_przeznaczona_1">9 000,00 zł</div>
+                            <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
                         </div>
                     </section>
                 </section>
@@ -286,7 +303,10 @@
                 </div>
                 <section class="grid-11-row">
                     <section class="grid-row">
-                        <div class="input" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                        <section class="block with-add-row">
+                            <div class="input listing left" id="kwota_przeznaczona_zrodlo_1">ŚnDS Pikniki <br> Wniosek nr 0071/2024</div>
+                            <span class="add-row" onclick="addRow(this)">+</span>
+                        </section>
                         <div class="money input-padding-right">
                             <div class="input" id="kwota_przeznaczona_1">6 000,00 zł</div>
                         </div>
