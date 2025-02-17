@@ -368,22 +368,57 @@ section#xdd:hover::after {
     position: relative;
 }
 
-.with-add-row:hover > .add-row {
+.with-add-row:hover > .add-row-button {
     display: block;
 }
 
-.add-row {
+/* .with-add-row:hover > .remove-row {
+    display: block;
+} */
+
+.zrodlo-finansowania-row + .zrodlo-finansowania-row:hover .remove-row-button {
+    display: block;
+}
+
+.add-row-button {
     display: none;
     position: absolute;
-    bottom: -20px;
-    background: white;
+    bottom: -0.6em;
     border-radius: 50%;
     text-align: center;
-    padding: 3px 10px;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 1;
     cursor: pointer;
+    width: 1.2em;
+    height: 1.2em;
+    line-height: 1.3em;
+    background: rgb(218, 242, 182);
+    left: 50%;
+    transform: translateX(-50%);
+    user-select: none;
+    transition: 0.1s;
+}
+
+.add-row-button:hover {
+    background: rgb(192, 242, 182);
+}
+
+.remove-row-button {
+    display: none;
+    position: absolute;
+    color: red;
+    top: 0.1em;
+    right: 0.1em;
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    text-align: center;
+    user-select: none;
+    transition: 0.1s;
+}
+.remove-row-button:hover {
+    color: darkred;
+    background: rgb(209, 182, 182);
 }
 
 .bez-czesci .czesci-row {

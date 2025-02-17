@@ -7,11 +7,18 @@ const dontAllowLinebreaks = (evt) => {
 
 let czyCzesci = false;
 
-function czesciHandler() {
+function setCzesci() {
     if (czyCzesci) return;
 
+    const count = prompt("Podaj liczbę części:");
+    if (count === null || count === "") return;
+    if (isNaN(count) || count < 1 || count > 16) {
+        alert("Podano nieprawidłową liczbę części (1-16)");
+        return;
+    }
+
     czyCzesci = true;
-    czesci(2);
+    czesci(count);
     document.getElementById("mainForm").classList.toggle("bez-czesci");
     document.getElementById("mainForm").classList.toggle("czesci");
     // document.getElementById("czesci-counter").classList.toggle("display-none");
@@ -147,17 +154,20 @@ document.getElementById("download").addEventListener("click", async () => {
     link.click();
 });
 
+// Templatka dla źródeł finansowania (zarówno bez części i części)
 const zrodloFinansowaniaTemplate = `
     <section class="grid-row zrodlo-finansowania-row">
         <section class="block with-add-row">
-            <div class="input listing left zrodlo-finansowania">ŚnDS<br>Wniosek nr </div>
-            <span class="add-row" onclick="addRow(this)">+</span>
+            <div class="input listing left zrodlo-finansowania">ŚNDS <br>Wniosek nr </div>
+            <span class="add-row-button" onclick="addRow(this)" title="Dodaj kolejne źródło">+</span>
+            <span class="remove-row-button" onclick="removeRow(this)" title="Usuń źródło">&times;</span>
         </section>
         <div class="money input-padding-right">
             <div class="input zrodlo-finansowania-kwota">0,00 zł</div>
         </div>
     </section>
 `.trim();
+document.querySelector("#czesci-11 > .bez-czesci-row > .grid-11-row").insertAdjacentHTML("beforeend", zrodloFinansowaniaTemplate);
 
 function czesci(count) {
     console.log("części", count);
@@ -206,11 +216,23 @@ function kwotyCzesciJson() {
     return czesciJson;
 }
 
+// Dodawanie źródła finansowania, bez części i części
 function addRow(el) {
-    el.parentElement.insertAdjacentHTML("beforebegin", zrodloFinansowaniaTemplate);
+    const zrodlo = el.parentElement.parentElement;
+    zrodlo.insertAdjacentHTML("afterend", zrodloFinansowaniaTemplate);
     setContentEditable();
 }
 
+// Usuwanie źródła finansowania, bez części i części
+function removeRow(el) {
+    const zrodlo = el.parentElement.parentElement;
+    if (zrodlo.parentElement.childElementCount === 1) {
+        alert("Błąd: Nie można usunąć ostatniego źródła finansowania");
+        return;
+    }
+    confirm("Czy na pewno chcesz usunąć to źródło finansowania?") &&
+    zrodlo.remove();
+}
 
 
 setContentEditable();
