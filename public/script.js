@@ -5,13 +5,17 @@ const dontAllowLinebreaks = (evt) => {
     }
 };
 
-const czesciCheckbox = document.getElementById("czesci");
+let czyCzesci = false;
+
 function czesciHandler() {
+    if (czyCzesci) return;
+
+    czyCzesci = true;
+    czesci(2);
     document.getElementById("mainForm").classList.toggle("bez-czesci");
     document.getElementById("mainForm").classList.toggle("czesci");
-    document.getElementById("czesci-counter").classList.toggle("display-none");
+    // document.getElementById("czesci-counter").classList.toggle("display-none");
 }
-// czesciHandler();
 
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
@@ -55,37 +59,38 @@ function zamowieniePzpHandler() {
     zamowieniePzpKwota.contentEditable = zamowieniePzpTak.checked;
 }
 
-document
-    .querySelectorAll(
-        "#dodatkowe_cpv_text, " +
-        "#termin_wykonania_text, " +
-        "#kwota_przeznaczona_1, #kwota_przeznaczona_2, " +
-        "#wartosc_brutto_1, #wartosc_brutto_2, #wartosc_zamowienia_1, " +
-        "#wartosc_zamowienia_2, #wartosc_zamowienia_euro_1,  #wartosc_zamowienia_euro_2"
-    )
-    .forEach((e) => {
-        try {
-            e.contentEditable = "plaintext-only";
-        } catch {
-            e.contentEditable = true;
+function setContentEditable() {
+    console.log("set content editable");
+    document.querySelectorAll(
+            "#dodatkowe_cpv_text, " +
+            "#termin_wykonania_text, " +
+            "#kwota_przeznaczona_1, #kwota_przeznaczona_2, " +
+            "#wartosc_brutto_1, #wartosc_brutto_2, #wartosc_zamowienia_1, " +
+            ".zrodlo-finansowania-kwota, " +
+            "#wartosc_zamowienia_2, #wartosc_zamowienia_euro_1,  #wartosc_zamowienia_euro_2"
+        ).forEach((e) => {
+            try {
+                e.contentEditable = "plaintext-only";
+            } catch {
+                e.contentEditable = true;
+            }
+            e.addEventListener("keydown", dontAllowLinebreaks);
         }
-        e.addEventListener("keydown", dontAllowLinebreaks);
-    });
-document
-    .querySelectorAll(
-        "#nazwa_zamowienia_text, #podstawa_ust_wartosci_text, #zalaczniki_text, #kwota_przeznaczona_zrodlo_text," +
-        "#informacje_dodatkowe_text, " +
-        "#kwota_przeznaczona_nazwa_1, #kwota_przeznaczona_zrodlo_1, " +
-        "#kwota_przeznaczona_nazwa_2, #kwota_przeznaczona_zrodlo_2, " +
-        "#wartosc_nazwa_1, #wartosc_nazwa_2"
-    )
-    .forEach((e) => {
-        try {
-            e.contentEditable = "plaintext-only";
-        } catch {
-            e.contentEditable = true;
+    );
+    document.querySelectorAll(
+            "#nazwa_zamowienia_text, #podstawa_ust_wartosci_text, #zalaczniki_text, #kwota_przeznaczona_zrodlo_text," +
+            "#informacje_dodatkowe_text, " +
+            ".zrodlo-finansowania, " +
+            "#wartosc_nazwa_1, #wartosc_nazwa_2"
+        ).forEach((e) => {
+            try {
+                e.contentEditable = "plaintext-only";
+            } catch {
+                e.contentEditable = true;
+            }
         }
-    });
+    );
+}
 
 const nazwaJednostki = document.getElementById("nazwa_jednostki");
 function adminHandler() {
@@ -142,9 +147,70 @@ document.getElementById("download").addEventListener("click", async () => {
     link.click();
 });
 
-const rowTemplate = document.getElementById("rowTemplate");
-function addRow(elem) {
-    const row = elem.parentElement.parentElement;
-    const newRow = rowTemplate.cloneNode(true);
-    row.parentElement.insertBefore(newRow, row.nextSibling);
+const zrodloFinansowaniaTemplate = `
+    <section class="grid-row zrodlo-finansowania-row">
+        <section class="block with-add-row">
+            <div class="input listing left zrodlo-finansowania">ŚnDS<br>Wniosek nr </div>
+            <span class="add-row" onclick="addRow(this)">+</span>
+        </section>
+        <div class="money input-padding-right">
+            <div class="input zrodlo-finansowania-kwota">0,00 zł</div>
+        </div>
+    </section>
+`.trim();
+
+function czesci(count) {
+    console.log("części", count);
+    const container = document.getElementById("czesci-11");
+    for (let i = 1; i <= count; i++) {
+        const czescTemplate = `
+            <section class="grid-row czesci-row">
+                <div class="mult-flex-row3 input-padding-right">
+                    <div>Część ${i}:</div>
+                    <div class="input kwota-przeznaczona">0,00 zł</div>
+                </div>
+                <section class="grid-11-row">
+                    ${zrodloFinansowaniaTemplate}
+                </section>
+            </section>
+        `.trim();
+
+        container.insertAdjacentHTML("beforeend", czescTemplate);
+    }
 }
+
+function kwotyCzesciJson() {
+    const czesci = document.querySelectorAll("#czesci-11 > .czesci-row");
+    const czesciJson = [];
+
+    czesci.forEach((czesc, i) => {
+        const czescJson = {
+            nr: i + 1,
+            kwotaPrzeznaczona: czesc.querySelector(".kwota-przeznaczona").innerText,
+            zrodlaFinansowania: [],
+        };
+
+        const zrodla = czesc.querySelectorAll(".zrodlo-finansowania");
+        const kwoty = czesc.querySelectorAll(".zrodlo-finansowania-kwota");
+
+        zrodla.forEach((zrodlo, i) => {
+            czescJson.zrodlaFinansowania.push({
+                zrodlo: zrodlo.innerText,
+                kwota: kwoty[i].innerText,
+            });
+        });
+
+        czesciJson.push(czescJson);
+    });
+
+    return czesciJson;
+}
+
+function addRow(el) {
+    el.parentElement.insertAdjacentHTML("beforebegin", zrodloFinansowaniaTemplate);
+    setContentEditable();
+}
+
+
+
+setContentEditable();
