@@ -18,8 +18,8 @@ function setCzesci() {
     }
 
     czesciCount = count;
-    czesciForm(count);
-    
+    naCzesci(count);
+
     document.getElementById("czesciButton").disabled = true;
 }
 
@@ -138,6 +138,8 @@ document.getElementById("download").addEventListener("click", async () => {
     // Add czesci JSON to the form data
     if (czesciCount > 0) {
         formData.append("czesci", JSON.stringify(czesciJson()));
+    } else {
+        formData.append("zrodla", JSON.stringify(zrodlaFinansowaniaJson()));
     }
 
     const formBody = new URLSearchParams(formData).toString();
@@ -161,8 +163,6 @@ document.getElementById("download").addEventListener("click", async () => {
     link.download = "wniosek.pdf";
     link.click();
 });
-
-
 
 // 7. Zwraca wiersz wartości części
 function getWartoscCzesci(i, nazwa = "", wartosc = "0,00", wartoscEuro = "0,00") {
@@ -253,7 +253,7 @@ function czesciFromJson(czesci) {
 }
 
 // Formualrz części z domyślnymi wartościami i zadaną liczbą części
-function czesciForm(count) {
+function naCzesci(count) {
     document.getElementById("mainForm").classList.toggle("bez-czesci");
     document.getElementById("mainForm").classList.toggle("czesci");
 
@@ -313,6 +313,36 @@ function czesciJson() {
     });
 
     return czesciJson;
+}
+
+// Zwraca JSONa źródeł finansowania (bez części)
+function zrodlaFinansowaniaJson() {
+    const zrodla = [];
+
+    const zrodlaFinansowania = document.querySelectorAll("#zrodla-finansowania-bez-czesci > .zrodlo-finansowania-row");
+    zrodlaFinansowania.forEach((zrodlo) => {
+        zrodla.push({
+            zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
+            kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
+        });
+    });
+
+    return zrodla;
+}
+
+// Ustaw źródła finansowania z JSONa
+function zrodlaFinansowaniaFromJson(zrodla) {
+    const zrodlaBezCzesci = document.getElementById("zrodla-finansowania-bez-czesci");
+
+    // Usuń bieżące
+    zrodlaBezCzesci.innerHTML = "";
+
+    zrodla.forEach((zrodlo) => {
+        const zrodloText = getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota);
+        zrodlaBezCzesci.insertAdjacentHTML("beforeend", zrodloText);
+    });
+
+    setContentEditable();
 }
 
 // Dodawanie źródła finansowania (zarówno bez części i części)

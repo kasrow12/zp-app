@@ -55,9 +55,6 @@ app.post('/generate-pdf', async (req, res) => {
             document.getElementById('podstawa_ust_wartosci_text').textContent = body.podstawa_ust_wartosci.trim();
             document.getElementById('wartosc_brutto').value = body.wartosc_brutto.trim();
             document.getElementById('kwota_przeznaczona_calosc').value = body.kwota_przeznaczona_calosc.trim();
-
-            // document.getElementById('kwota_przeznaczona_zrodlo_text').textContent = body.kwota_przeznaczona_zrodlo;
-            // document.getElementById('kwota_przeznaczona').value = body.kwota_przeznaczona;
             
             document.getElementById('termin_wykonania_text').textContent = body.termin_wykonania.trim();
             document.getElementById('informacje_dodatkowe_text').textContent = body.informacje_dodatkowe.trim();
@@ -69,6 +66,13 @@ app.post('/generate-pdf', async (req, res) => {
             await page.evaluate((czesci) => {
                 czesciFromJson(czesci);
             }, czesci);
+        } else if (req.body.zrodla != null) {
+            const zrodla = JSON.parse(req.body.zrodla);
+            await page.evaluate((zrodla) => {
+                zrodlaFinansowaniaFromJson(zrodla);
+            }, zrodla);
+        } else {
+            throw new Error('Brak części lub źródeł finansowania');
         }
 
         // generate the PDF
