@@ -5,10 +5,10 @@ const dontAllowLinebreaks = (evt) => {
     }
 };
 
-let czyCzesci = false;
+let czesciCount = 0;
 
 function setCzesci() {
-    if (czyCzesci) return;
+    if (czesciCount > 0) return;
 
     const count = prompt("Podaj liczbę części (2-16):");
     if (count === null || count === "") return;
@@ -17,13 +17,10 @@ function setCzesci() {
         return;
     }
 
-    czesci(count);
+    czesciCount = count;
+    czesciForm(count);
     
-    czyCzesci = true;
     document.getElementById("czesciButton").disabled = true;
-
-    document.getElementById("mainForm").classList.toggle("bez-czesci");
-    document.getElementById("mainForm").classList.toggle("czesci");
 }
 
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
@@ -138,6 +135,11 @@ document.getElementById("download").addEventListener("click", async () => {
         formData.append(e.name, e.value);
     });
 
+    // Add czesci JSON to the form data
+    if (czesciCount > 0) {
+        formData.append("czesci", JSON.stringify(czesciJson()));
+    }
+
     const formBody = new URLSearchParams(formData).toString();
 
     const response = await fetch("/generate-pdf", {
@@ -160,94 +162,154 @@ document.getElementById("download").addEventListener("click", async () => {
     link.click();
 });
 
-// Templatka dla źródeł finansowania (zarówno bez części i części)
-const zrodloFinansowaniaTemplate = `
-    <section class="grid-row zrodlo-finansowania-row">
-        <section class="block with-add-row">
-            <div class="input listing left zrodlo-finansowania">ŚNDS <br>Wniosek nr </div>
-            <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
-            <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
-        </section>
-        <div class="money input-padding-right">
-            <div class="input zrodlo-finansowania-kwota">0,00 zł</div>
-        </div>
-    </section>`
-.trim();
 
-function czesci(count) {
-    // 7.
-    const afterWartosci = document.getElementById("czesci-7-after");
-    for (let i = 1; i <= count; i++) {
-        const wartoscTemplate = `
-            <section class="grid-row czesci-row">
-                <div class="listing left input-padding-left">
-                    <div class="padding-left">Część ${i}:</div>
-                    <div class="input wartosc-nazwa"></div>
-                </div>
-                <div class="money input wartosc-zamowienia">0,00</div>
-                <div class="color">zł, co stanowi równowartość</div>
-                <div class="money input wartosc-zamowienia-euro">0,00</div>
-                <div class="color">euro</div>
-            </section>`
-        .trim();
-        afterWartosci.insertAdjacentHTML("beforebegin", wartoscTemplate);
+
+// 7. Zwraca wiersz wartości części
+function getWartoscCzesci(i, nazwa = "", wartosc = "0,00", wartoscEuro = "0,00") {
+    return `
+        <section class="grid-row czesci-row">
+            <div class="listing left input-padding-left">
+                <div class="padding-left">Część ${i}:</div>
+                <div class="input wartosc-nazwa">${nazwa}</div>
+            </div>
+            <div class="money input wartosc-zamowienia">${wartosc}</div>
+            <div class="color">zł, co stanowi równowartość</div>
+            <div class="money input wartosc-zamowienia-euro">${wartoscEuro}</div>
+            <div class="color">euro</div>
+        </section>`
+    .trim();
+}
+
+// 10. Zwraca wiersz kwoty brutto
+function getKwotaBrutto(i, kwota = "0,00 zł") {
+    return `
+        <section class="grid-row czesci-row">
+            <div class="nowrap">Część ${i}:</div>
+            <div class="input money kwota-brutto">${kwota}</div>
+            <div class="filler"></div>
+        </section>`
+    .trim();
+}
+
+// 11. Zwraca wiersz kwoty przeznaczonej
+function getKwotaPrzeznaczona(i, kwota = "0,00 zł", zrodla) {
+    let zrodlaText = "";
+    if (zrodla) {
+        zrodlaText = zrodla.map((zrodlo) => getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota)).join("");
+    } else {
+        zrodlaText = getZrodloFinansowania();
     }
 
+    return `
+        <section class="grid-row czesci-row">
+            <div class="mult-flex-row3 input-padding-right">
+                <div>Część ${i}:</div>
+                <div class="input kwota-przeznaczona">${kwota}</div>
+            </div>
+            <section class="grid-11-row">
+                ${zrodlaText}
+            </section>
+        </section>`
+    .trim();
+}
+
+// 11+. Zwraca wiersz źródła finansowania (może być kilka dla części)
+function getZrodloFinansowania(zrodlo = "ŚNDS <br>Wniosek nr ", kwota = "0,00 zł") {
+    return `
+        <section class="grid-row zrodlo-finansowania-row">
+            <section class="block with-add-row">
+                <div class="input listing left zrodlo-finansowania">${zrodlo}</div>
+                <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
+                <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
+            </section>
+            <div class="money input-padding-right">
+                <div class="input zrodlo-finansowania-kwota">${kwota}</div>
+            </div>
+        </section>`
+    .trim();
+}
+
+// Formularz części z JSONa
+function czesciFromJson(czesci) {
+    document.getElementById("mainForm").classList.toggle("bez-czesci");
+    document.getElementById("mainForm").classList.toggle("czesci");
+
+    // 7.
+    const wartosciBarrier = document.getElementById("czesci-7-after");
     // 10.
     const kwotyBrutto = document.getElementById("czesci-brutto");
-    for (let i = 1; i <= count; i++) {
-        const bruttoTemplate = `
-            <section class="grid-row czesci-row">
-                <div class="nowrap">Część ${i}:</div>
-                <div class="input money kwota-brutto">0,00 zł</div>
-                <div class="filler"></div>
-            </section>`
-        .trim();
-        kwotyBrutto.insertAdjacentHTML("beforeend", bruttoTemplate);
-    }
-
     // 11.
-    const container = document.getElementById("czesci-11");
+    const czesciKwoty = document.getElementById("czesci-11");
+
+    const count = Object.keys(czesci).length;
     for (let i = 1; i <= count; i++) {
-        const czescTemplate = `
-            <section class="grid-row czesci-row">
-                <div class="mult-flex-row3 input-padding-right">
-                    <div>Część ${i}:</div>
-                    <div class="input kwota-przeznaczona">0,00 zł</div>
-                </div>
-                <section class="grid-11-row">
-                    ${zrodloFinansowaniaTemplate}
-                </section>
-            </section>`
-        .trim();
-        container.insertAdjacentHTML("beforeend", czescTemplate);
+        const czesc = czesci[i];
+
+        wartosciBarrier.insertAdjacentHTML("beforebegin", getWartoscCzesci(i, czesc.nazwa, czesc.wartosc, czesc.wartoscEuro));
+        kwotyBrutto.insertAdjacentHTML("beforeend", getKwotaBrutto(i, czesc.brutto));
+        czesciKwoty.insertAdjacentHTML("beforeend", getKwotaPrzeznaczona(i, czesc.kwotaPrzeznaczona, czesc.zrodla));
+    }
+    setContentEditable();
+}
+
+// Formualrz części z domyślnymi wartościami i zadaną liczbą części
+function czesciForm(count) {
+    document.getElementById("mainForm").classList.toggle("bez-czesci");
+    document.getElementById("mainForm").classList.toggle("czesci");
+
+    // 7.
+    const wartosciBarrier = document.getElementById("czesci-7-after");
+    // 10.
+    const kwotyBrutto = document.getElementById("czesci-brutto");
+    // 11.
+    const czesciKwoty = document.getElementById("czesci-11");
+
+    for (let i = 1; i <= count; i++) {
+        wartosciBarrier.insertAdjacentHTML("beforebegin", getWartoscCzesci(i));
+        kwotyBrutto.insertAdjacentHTML("beforeend", getKwotaBrutto(i));
+        czesciKwoty.insertAdjacentHTML("beforeend", getKwotaPrzeznaczona(i));
     }
 
     setContentEditable();
 }
 
-function kwotyCzesciJson() {
-    const czesci = document.querySelectorAll("#czesci-11 > .czesci-row");
-    const czesciJson = [];
+// Zwraca JSONa części
+function czesciJson() {
+    const czesciJson = {};
+    for (let i = 1; i <= czesciCount; i++) {
+        czesciJson[i] = {};
+    }
 
-    czesci.forEach((czesc, i) => {
-        const czescJson = {
-            nr: i + 1,
-            kwotaPrzeznaczona: czesc.querySelector(".kwota-przeznaczona").innerText,
-            zrodlaFinansowania: [],
-        };
+    // 7.
+    const wartosci = document.querySelectorAll("#czesci-7 > .czesci-row");
+    wartosci.forEach((czesc, i) => {
+        czesciJson[i + 1].nazwa = czesc.querySelector(".wartosc-nazwa").innerText;
+        czesciJson[i + 1].wartosc = czesc.querySelector(".wartosc-zamowienia").innerText;
+        czesciJson[i + 1].wartoscEuro = czesc.querySelector(".wartosc-zamowienia-euro").innerText;
+    });
 
-        const zrodla = czesc.querySelectorAll(".zrodlo-finansowania");
-        const kwoty = czesc.querySelectorAll(".zrodlo-finansowania-kwota");
+    // 10.
+    const brutta = document.querySelectorAll("#czesci-brutto > .czesci-row");
+    brutta.forEach((brutto, i) => {
+        czesciJson[i + 1].brutto = brutto.querySelector(".kwota-brutto").innerText;
+    });
 
-        zrodla.forEach((zrodlo, i) => {
-            czescJson.zrodlaFinansowania.push({
-                zrodlo: zrodlo.innerText,
-                kwota: kwoty[i].innerText,
+    // 11.
+    const czesciKwoty = document.querySelectorAll("#czesci-11 > .czesci-row");
+    czesciKwoty.forEach((czesc, i) => {
+
+        const zrodlaFinansowania = [];
+
+        const zrodla = czesc.querySelectorAll(".zrodlo-finansowania-row");
+        zrodla.forEach((zrodlo) => {
+            zrodlaFinansowania.push({
+                zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
+                kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
             });
         });
 
-        czesciJson.push(czescJson);
+        czesciJson[i + 1].zrodla = zrodlaFinansowania;
+        czesciJson[i + 1].kwotaPrzeznaczona = czesc.querySelector(".kwota-przeznaczona").innerText;
     });
 
     return czesciJson;
@@ -256,7 +318,7 @@ function kwotyCzesciJson() {
 // Dodawanie źródła finansowania (zarówno bez części i części)
 function dodajZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
-    zrodlo.insertAdjacentHTML("afterend", zrodloFinansowaniaTemplate);
+    zrodlo.insertAdjacentHTML("afterend", getZrodloFinansowania());
     setContentEditable();
 }
 
@@ -274,6 +336,6 @@ function usunZrodlo(el) {
 // main
 
 // dodaj pierwsze źródło finansowania
-document.getElementById("zrodla-finansowania-bez-czesci").insertAdjacentHTML("beforeend", zrodloFinansowaniaTemplate);
+document.getElementById("zrodla-finansowania-bez-czesci").insertAdjacentHTML("beforeend", getZrodloFinansowania());
 
 setContentEditable();
