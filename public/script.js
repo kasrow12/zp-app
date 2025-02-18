@@ -12,16 +12,18 @@ function setCzesci() {
 
     const count = prompt("Podaj liczbę części:");
     if (count === null || count === "") return;
-    if (isNaN(count) || count < 1 || count > 16) {
-        alert("Podano nieprawidłową liczbę części (1-16)");
+    if (isNaN(count) || count < 2 || count > 16) {
+        alert("Podano nieprawidłową liczbę części (2-16)");
         return;
     }
 
-    czyCzesci = true;
     czesci(count);
+    
+    czyCzesci = true;
+    document.getElementById("czesciButton").disabled = true;
+
     document.getElementById("mainForm").classList.toggle("bez-czesci");
     document.getElementById("mainForm").classList.toggle("czesci");
-    // document.getElementById("czesci-counter").classList.toggle("display-none");
 }
 
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
@@ -71,10 +73,11 @@ function setContentEditable() {
     document.querySelectorAll(
             "#dodatkowe_cpv_text, " +
             "#termin_wykonania_text, " +
-            "#kwota_przeznaczona_1, #kwota_przeznaczona_2, " +
-            "#wartosc_brutto_1, #wartosc_brutto_2, #wartosc_zamowienia_1, " +
+            ".kwota-brutto, " +
+            "#wartosc_zamowienia_1, " +
+            ".kwota-przeznaczona, " +
             ".zrodlo-finansowania-kwota, " +
-            "#wartosc_zamowienia_2, #wartosc_zamowienia_euro_1,  #wartosc_zamowienia_euro_2"
+            ".wartosc-zamowienia, .wartosc-zamowienia-euro"
         ).forEach((e) => {
             try {
                 e.contentEditable = "plaintext-only";
@@ -88,7 +91,7 @@ function setContentEditable() {
             "#nazwa_zamowienia_text, #podstawa_ust_wartosci_text, #zalaczniki_text, #kwota_przeznaczona_zrodlo_text," +
             "#informacje_dodatkowe_text, " +
             ".zrodlo-finansowania, " +
-            "#wartosc_nazwa_1, #wartosc_nazwa_2"
+            ".wartosc-nazwa"
         ).forEach((e) => {
             try {
                 e.contentEditable = "plaintext-only";
@@ -159,18 +162,48 @@ const zrodloFinansowaniaTemplate = `
     <section class="grid-row zrodlo-finansowania-row">
         <section class="block with-add-row">
             <div class="input listing left zrodlo-finansowania">ŚNDS <br>Wniosek nr </div>
-            <span class="add-row-button" onclick="addRow(this)" title="Dodaj kolejne źródło">+</span>
-            <span class="remove-row-button" onclick="removeRow(this)" title="Usuń źródło">&times;</span>
+            <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
+            <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
         </section>
         <div class="money input-padding-right">
             <div class="input zrodlo-finansowania-kwota">0,00 zł</div>
         </div>
-    </section>
-`.trim();
-document.querySelector("#czesci-11 > .bez-czesci-row > .grid-11-row").insertAdjacentHTML("beforeend", zrodloFinansowaniaTemplate);
+    </section>`
+.trim();
 
 function czesci(count) {
-    console.log("części", count);
+    // 7.
+    const afterWartosci = document.getElementById("czesci-7-after");
+    for (let i = 1; i <= count; i++) {
+        const wartoscTemplate = `
+            <section class="grid-row czesci-row">
+                <div class="listing left input-padding-left">
+                    <div class="padding-left">Część ${i}:</div>
+                    <div class="input wartosc-nazwa"></div>
+                </div>
+                <div class="money input wartosc-zamowienia">0,00</div>
+                <div class="color">zł, co stanowi równowartość</div>
+                <div class="money input wartosc-zamowienia-euro">0,00</div>
+                <div class="color">euro</div>
+            </section>`
+        .trim();
+        afterWartosci.insertAdjacentHTML("beforebegin", wartoscTemplate);
+    }
+
+    // 10.
+    const kwotyBrutto = document.getElementById("czesci-brutto");
+    for (let i = 1; i <= count; i++) {
+        const bruttoTemplate = `
+            <section class="grid-row czesci-row">
+                <div class="nowrap">Część ${i}:</div>
+                <div class="input money kwota-brutto">0,00 zł</div>
+                <div class="filler"></div>
+            </section>`
+        .trim();
+        kwotyBrutto.insertAdjacentHTML("beforeend", bruttoTemplate);
+    }
+
+    // 11.
     const container = document.getElementById("czesci-11");
     for (let i = 1; i <= count; i++) {
         const czescTemplate = `
@@ -182,11 +215,12 @@ function czesci(count) {
                 <section class="grid-11-row">
                     ${zrodloFinansowaniaTemplate}
                 </section>
-            </section>
-        `.trim();
-
+            </section>`
+        .trim();
         container.insertAdjacentHTML("beforeend", czescTemplate);
     }
+
+    setContentEditable();
 }
 
 function kwotyCzesciJson() {
@@ -216,15 +250,15 @@ function kwotyCzesciJson() {
     return czesciJson;
 }
 
-// Dodawanie źródła finansowania, bez części i części
-function addRow(el) {
+// Dodawanie źródła finansowania (zarówno bez części i części)
+function dodajZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
     zrodlo.insertAdjacentHTML("afterend", zrodloFinansowaniaTemplate);
     setContentEditable();
 }
 
-// Usuwanie źródła finansowania, bez części i części
-function removeRow(el) {
+// Usuwanie źródła finansowania (zarówno bez części i części)
+function usunZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
     if (zrodlo.parentElement.childElementCount === 1) {
         alert("Błąd: Nie można usunąć ostatniego źródła finansowania");
@@ -234,5 +268,9 @@ function removeRow(el) {
     zrodlo.remove();
 }
 
+// main
+
+// dodaj pierwsze źródło finansowania
+document.getElementById("zrodla-finansowania-bez-czesci").insertAdjacentHTML("beforeend", zrodloFinansowaniaTemplate);
 
 setContentEditable();

@@ -9,12 +9,12 @@
 </head>
 
 <body>
-    <input type="button" class="no-print" id="czesci" onclick="setCzesci()" value="Części">
+    <button class="no-print button" onclick="setCzesci()" id="czesciButton">Części</button>
     <label class="no-print" style="font-size: 18px;">
         <input type="checkbox" id="admin" onchange="adminHandler()">
-        Admin
+        Edycja dodatkowych pól
     </label>
-    <button class="no-print" type="button" id="download">Generuj PDF</button>
+    <button class="no-print button" id="download">Generuj PDF</button>
 
     <!-- Main form -->
     <form class="container bez-czesci" id="mainForm" action="#">
@@ -116,7 +116,7 @@
         </section>
 
         <div class="lp">7.</div>
-        <section class="grid-container grid-7 borders">
+        <section class="grid-container grid-7 borders" id="czesci-7">
             <section class="grid-row">
                 <div class="color full-width block">
                     Wartość <span class="small">(bez podatku od towarów i usług, ustalona z należytą starannością)</span>
@@ -131,37 +131,17 @@
                     <p>zamówienia</p>
                 </label>
                 <input class="money input input-box" name="wartosc_zamowienia" id="wartosc_zamowienia"
-                    value="31 549,60" maxlength="10">
+                    value="0,00" maxlength="10">
                 <div class="color">zł, co stanowi równowartość</div>
                 <input class="money input input-box" name="wartosc_zamowienia_euro" id="wartosc_zamowienia_euro"
-                    value="7 634,99" maxlength="10">
+                    value="0,00" maxlength="10">
                 <div class="color">euro</div>
             </section>
 
-            <!-- części -->
-            <section class="grid-row czesci-row">
-                <div class="listing left input-padding-left">
-                    <div class="padding-left">Część 1:</div>
-                    <div class="input" id="wartosc_nazwa_1">Zakup zestawów głośnikowych </div>
-                </div>
-                <div class="money input" id="wartosc_zamowienia_1">31 549,60</div>
-                <div class="color">zł, co stanowi równowartość</div>
-                <div class="money input" id="wartosc_zamowienia_euro_1">7 634,99</div>
-                <div class="color">euro</div>
-            </section>
+            <!-- <czesci-row /> -->
+            <!-- <czesci-row /> -->
 
-            <section class="grid-row czesci-row">
-                <div class="listing left input-padding-left">
-                    <div class="padding-left">Część 2:</div>
-                    <div class="input" id="wartosc_nazwa_2">Zakup pokrowców i słuchawek</div>
-                </div>
-                <div class="money input" id="wartosc_zamowienia_2">31 549,60</div>
-                <div class="color">zł, co stanowi równowartość</div>
-                <div class="money input" id="wartosc_zamowienia_euro_2">7 634,99</div>
-                <div class="color">euro</div>
-            </section>
-
-            <section class="grid-row">
+            <section class="grid-row" id="czesci-7-after">
                 <div class="full-width color">
                     Zamówienie udzielane w zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych:
                 </div>
@@ -193,7 +173,7 @@
         <div class="lp">8.</div>
         <div class="input-padding-right">
             <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" name="dzien_zamowienia"
-                id="dzien_zamowienia" value="02.04.2024" maxlength="13">
+                id="dzien_zamowienia" value="02.04.2024 r." maxlength="13">
         </div>
 
         <div class="lp">9.</div>
@@ -202,7 +182,7 @@
             <input type="hidden" name="podstawa_ust_wartosci" id="podstawa_ust_wartosci">
         </div>
         <div class="lp">10.</div>
-        <section class="grid-container grid-10 no-borders">
+        <section class="grid-container grid-10 no-borders" id="czesci-brutto">
             <section class="grid-row">
                 <div class="color block full-width">Kwota brutto <span class="small">(wartość zamówienia łącznie z należnymi opłatami, w tym VAT)</span></div>
             </section>
@@ -210,16 +190,9 @@
                 <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto"
                     value="100 233,00 zł">
             </section>
-            <section class="grid-row czesci-row">
-                <div class="nowrap">Część 1:</div>
-                <div class="input money" id="wartosc_brutto_1">64 263,40 zł</div>
-                <div class="filler"></div>
-            </section>
-            <section class="grid-row czesci-row">
-                <div class="nowrap">Część 2:</div>
-                <div class="input money" id="wartosc_brutto_2">23 233,00 zł</div>
-                <div class="filler"></div>
-            </section>
+
+            <!-- <czesci-row /> -->
+            <!-- <czesci-row /> -->
         </section>
 
         <!-- czemu tutaj kwoty się powtarzają -->
