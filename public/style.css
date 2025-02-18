@@ -194,14 +194,19 @@ form > * {
 }
 
 .grid-6-2 {
-    grid-template-columns: 3fr 2fr 2fr 7fr 6fr 5fr 5fr;
+    /* grid-template-columns: 3fr 2fr 2fr 7fr 6fr 5fr 5fr; */
     grid-template-columns: max-content max-content 7ch max-content 1fr max-content 15ch;
 }
 
 .grid-7 {
-    grid-template-columns: auto min-content min-content min-content min-content;
-    grid-template-columns: 42% 13% 26% 13% 6%;
+    /* grid-template-columns: auto min-content min-content min-content min-content; */
+    /* grid-template-columns: 42% 13% 26% 13% 6%; */
     grid-template-columns: 1fr 13ch max-content 13ch max-content;
+}
+
+/* zł, co stanowi równowartość na dwie linie */
+.czesci .grid-7 {
+    grid-template-columns: 1fr 13ch min-content 13ch max-content;
 }
 
 .grid-10 {
@@ -209,8 +214,8 @@ form > * {
 }
 
 .grid-11 {
-    grid-template-columns: auto-fit auto-fit auto-fit;
-    grid-template-columns: auto auto auto;
+    /* grid-template-columns: auto-fit auto-fit auto-fit; */
+    /* grid-template-columns: auto auto auto; */
     grid-template-columns: minmax(320px, 1fr) minmax(600px, auto) minmax(250px, 1fr);
     /* grid-template-columns: repeat(auto-fit, 250px); */
 }

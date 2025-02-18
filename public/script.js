@@ -10,7 +10,7 @@ let czyCzesci = false;
 function setCzesci() {
     if (czyCzesci) return;
 
-    const count = prompt("Podaj liczbę części:");
+    const count = prompt("Podaj liczbę części (2-16):");
     if (count === null || count === "") return;
     if (isNaN(count) || count < 2 || count > 16) {
         alert("Podano nieprawidłową liczbę części (2-16)");
@@ -69,15 +69,15 @@ function zamowieniePzpHandler() {
 }
 
 function setContentEditable() {
-    console.log("set content editable");
-    document.querySelectorAll(
-            "#dodatkowe_cpv_text, " +
-            "#termin_wykonania_text, " +
-            ".kwota-brutto, " +
-            "#wartosc_zamowienia_1, " +
-            ".kwota-przeznaczona, " +
-            ".zrodlo-finansowania-kwota, " +
-            ".wartosc-zamowienia, .wartosc-zamowienia-euro"
+    document.querySelectorAll(`
+            #dodatkowe_cpv_text,
+            .wartosc-zamowienia,
+            .wartosc-zamowienia-euro,
+            .kwota-brutto,
+            .kwota-przeznaczona,
+            .zrodlo-finansowania-kwota,
+            #termin_wykonania_text
+            `
         ).forEach((e) => {
             try {
                 e.contentEditable = "plaintext-only";
@@ -87,11 +87,14 @@ function setContentEditable() {
             e.addEventListener("keydown", dontAllowLinebreaks);
         }
     );
-    document.querySelectorAll(
-            "#nazwa_zamowienia_text, #podstawa_ust_wartosci_text, #zalaczniki_text, #kwota_przeznaczona_zrodlo_text," +
-            "#informacje_dodatkowe_text, " +
-            ".zrodlo-finansowania, " +
-            ".wartosc-nazwa"
+    document.querySelectorAll(`
+            #nazwa_zamowienia_text,
+            #podstawa_ust_wartosci_text,
+            .wartosc-nazwa,
+            .zrodlo-finansowania,
+            #informacje_dodatkowe_text,
+            #zalaczniki_text
+            `
         ).forEach((e) => {
             try {
                 e.contentEditable = "plaintext-only";
