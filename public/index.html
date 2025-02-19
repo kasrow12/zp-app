@@ -10,11 +10,11 @@
 
 <body>
     <button class="no-print button" onclick="setCzesci()" id="czesciButton">Części</button>
-    <label class="no-print" style="font-size: 18px;">
-        <input type="checkbox" id="admin" onchange="adminHandler()">
+    <label class="no-print">
+        <input type="checkbox" id="dodatkoweCheckbox" onchange="dodatkoweHandler()">
         Edycja dodatkowych pól
     </label>
-    <button class="no-print button" id="download">Generuj PDF</button>
+    <button class="no-print button" id="downloadPdf">Generuj PDF</button>
 
     <!-- Main form -->
     <form class="container bez-czesci" id="mainForm" action="#">
@@ -33,10 +33,7 @@
         <div class="lp">2.</div>
         <section class="two-column">
             <div class="color">Nazwa zamówienia publicznego (przedmiotu zamówienia)</div>
-            <div class="input" id="nazwa_zamowienia_text">Zakup pionu zasilającego do <!--
-                -->zasilania stanowiska realizatorskiego dla studentów zasilającego do zasilania stanowiska <!--
-                -->realizatorskiego dla studentów PW<!--
-            --></div>
+            <div class="input" id="nazwa_zamowienia_text"></div>
             <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia">
         </section>
 
@@ -70,12 +67,12 @@
         <div class="lp">4.1.</div>
         <div class="input-padding-right">
             <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv" name="glowny_cpv"
-                value="15981320-7" maxlength="10" required>
+                value="" maxlength="10" required>
         </div>
 
         <div class="lp">4.2.</div>
         <div class="input-padding-right">
-            <span>Dodatkowe kody CPV:</span><span class="input" id="dodatkowe_cpv_text">31700000-3, 44300000-3</span>
+            <span>Dodatkowe kody CPV:</span><span class="input" id="dodatkowe_cpv_text"></span>
             <input type="hidden" name="dodatkowe_cpv" id="dodatkowe_cpv">
         </div>
 
@@ -90,7 +87,7 @@
         <div class="lp">6.1.</div>
         <label class="flex input">
             <input type="radio" id="plan_zamowien_nie" class="checkbox-input" name="plan_zamowien"
-                value="plan_zamowien_nie" onchange="planZamowienHandler()">
+                value="plan_zamowien_nie" onchange="planZamowienHandler()" checked>
             <span class="checkbox"></span>
             <p>nie</p>
         </label>
@@ -100,18 +97,18 @@
             <section class="grid-row">
                 <label class="flex input">
                     <input type="radio" id="plan_zamowien_tak" class="checkbox-input" name="plan_zamowien"
-                        value="plan_zamowien_tak" onchange="planZamowienHandler()" checked>
+                        value="plan_zamowien_tak" onchange="planZamowienHandler()">
                     <span class="checkbox"></span>
                     <p>tak</p>
                 </label>
                 <div class="color center">rok</div>
-                <input class="input-box center" name="plan_zamowien_rok" id="plan_zamowien_rok" value="2025" maxlength="4">
+                <input class="input-box center hidden" name="plan_zamowien_rok" id="plan_zamowien_rok" maxlength="4" disabled>
                 <div class="color center">oznaczenie planu, pozycja</div>
-                <div class="listing" id="plan_zamowien_oznaczenia_text">AC poz. 21</div>
+                <div class="listing hidden" id="plan_zamowien_oznaczenia_text"></div>
                 <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
                 <div class="color center">wartość w planie</div>
                 <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
-                <div class="money" id="plan_zamowien_wartosci_text">2 137,00 zł</div>
+                <div class="money hidden" id="plan_zamowien_wartosci_text">0,00 zł</div>
             </section>
         </section>
 
@@ -173,7 +170,7 @@
         <div class="lp">8.</div>
         <div class="input-padding-right">
             <span>Dzień ustalenia wartości zamówienia:</span><input class="input input-box" name="dzien_zamowienia"
-                id="dzien_zamowienia" value="02.04.2024 r." maxlength="13">
+                id="dzien_zamowienia" maxlength="13">
         </div>
 
         <div class="lp">9.</div>
@@ -188,7 +185,7 @@
             </section>
             <section class="grid-row">
                 <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto"
-                    value="100 233,00 zł">
+                    value="0,00 zł">
             </section>
 
             <!-- <czesci-row /> -->
@@ -234,7 +231,7 @@
 
         <div class="lp">13.</div>
         <div class="input-padding-right">
-            <span>Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie gdy jest to uzasadnione obiektywną przyczyną)</span>:</span><span class="input" id="termin_wykonania_text">23.05.2024 r.</span>
+            <span>Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie gdy jest to uzasadnione obiektywną przyczyną)</span>:</span><span class="input" id="termin_wykonania_text"></span>
             <input type="hidden" name="termin_wykonania" id="termin_wykonania">
         </div>
 

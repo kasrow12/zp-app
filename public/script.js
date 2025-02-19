@@ -1,121 +1,178 @@
-const dontAllowLinebreaks = (evt) => {
-    if (evt.keyCode === 13) {
-        // Enter
-        evt.preventDefault();
-    }
-};
+const MIN_CZESCI = 2;
+const MAX_CZESCI = 16;
+const DEFAULT_WARTOSC = "0,00";
+const DEFAULT_ZRODLO = "ŚNDS <br>Wniosek nr ";
+const MAX_ZRODLA_FINANSOWANIA = 8;
+const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 
 let czesciCount = 0;
 
-function setCzesci() {
-    if (czesciCount > 0) return;
+const downloadButton = document.getElementById("downloadPdf");
+const dodatkoweCheckbox = document.getElementById("dodatkoweCheckbox");
 
-    const count = prompt("Podaj liczbę części (2-16):");
-    if (count === null || count === "") return;
-    if (isNaN(count) || count < 2 || count > 16) {
-        alert("Podano nieprawidłową liczbę części (2-16)");
-        return;
-    }
-
-    czesciCount = count;
-    naCzesci(count);
-
-    document.getElementById("czesciButton").disabled = true;
-}
-
+const mainForm = document.getElementById("mainForm");
+const nazwaJednostki = document.getElementById("nazwa_jednostki");
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
+
 const planZamowienTak = document.getElementById("plan_zamowien_tak");
 const planZamowienRok = document.getElementById("plan_zamowien_rok");
 const planZamowienOznaczenia = document.getElementById("plan_zamowien_oznaczenia_text");
 const planZamowienWartosci = document.getElementById("plan_zamowien_wartosci_text");
 
-// 5. Handler
-function rodzajeHandler() {
-    const czyUslugi = uslugiCheckbox.checked;
-    kategorieUslug.classList.toggle("input", czyUslugi);
-    kategorieUslug.classList.toggle("hidden", !czyUslugi);
-    kategorieUslug.disabled = !czyUslugi;
-}
-
-// 6.2. Handler
-function planZamowienHandler() {
-    const visible = planZamowienTak.checked;
-
-    planZamowienRok.classList.toggle("input", visible);
-    planZamowienRok.classList.toggle("hidden", !visible);
-    planZamowienRok.disabled = !visible;
-
-    planZamowienOznaczenia.classList.toggle("input", visible);
-    planZamowienOznaczenia.classList.toggle("hidden", !visible);
-    planZamowienOznaczenia.contentEditable = visible;
-
-    planZamowienWartosci.classList.toggle("input", visible);
-    planZamowienWartosci.classList.toggle("hidden", !visible);
-    planZamowienWartosci.contentEditable = visible;
-}
-planZamowienHandler();
-
-const admin = document.getElementById("admin");
 const zamowieniePzpTak = document.getElementById("zamowienie_pzp_tak");
 const zamowieniePzpNie = document.getElementById("zamowienie_pzp_nie");
 const zamowieniePzpKwota = document.getElementById("zamowienie_pzp_kwota_text");
+
+const wartosciBarrier = document.getElementById("czesci-7-after");
+const kwotyBrutto = document.getElementById("czesci-brutto");
+const zrodlaBezCzesci = document.getElementById("zrodla-finansowania-bez-czesci");
+const czesciKwoty = document.getElementById("czesci-11");
+
+// Trochę zapobiega przed nowymi liniami w "jednolinijkowych" polach (np. kwota)
+const dontAllowLinebreaks = (evt) => {
+    if (evt.keyCode === 13) {
+        // Enter key
+        evt.preventDefault();
+    }
+};
+
+// Ustawia contentEditable na elemencie, zapobiega wklejaniu formatowania
+const setContentEditable = (elem, enable = true) => {
+    if (!enable) {
+        elem.contentEditable = false;
+        return;
+    }
+
+    try {
+        elem.contentEditable = "plaintext-only";
+    } catch {
+        elem.contentEditable = true;
+    }
+};
+
+// Bezpieczeństwo
+const escapeHtml = (unsafe) => {
+    return unsafe
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+// Przełącza widoczność elementu, z opcją jego ukrycia
+const toggleVisibility = (element, visible, withHidden) => {
+    element.classList.toggle("input", visible);
+    element.disabled = !visible;
+    withHidden && element.classList.toggle("hidden", !visible);
+};
+
+// Wywoływane po kliknięciu przycisku "Części"
+function setCzesci() {
+    if (czesciCount > 0) return;
+
+    const count = prompt(`Podaj liczbę części (${MIN_CZESCI}-${MAX_CZESCI}):`);
+
+    if (!count) return;
+
+    const parsedCount = parseInt(count);
+    if (isNaN(parsedCount) || parsedCount < MIN_CZESCI || parsedCount > MAX_CZESCI) {
+        alert("Podano nieprawidłową liczbę części (${MIN_CZESCI}-${MAX_CZESCI})");
+        return;
+    }
+
+    czesciCount = parsedCount;
+    naCzesci(parsedCount);
+
+    // jednorazowo zmień, todo: ładniejszy przycisk?
+    document.getElementById("czesciButton").disabled = true;
+}
+
+// Edycja dodatkowych pól
+function dodatkoweHandler() {
+    const dodatkowe = dodatkoweCheckbox.checked;
+
+    // 1. Nazwa jednostki
+    toggleVisibility(nazwaJednostki, dodatkowe);
+
+    // 7.
+    // Checkbox jest ukryty, styl parenta
+    zamowieniePzpTak.parentElement.classList.toggle("input", dodatkowe);
+    zamowieniePzpTak.disabled = !dodatkowe;
+
+    zamowieniePzpNie.parentElement.classList.toggle("input", dodatkowe);
+    zamowieniePzpNie.disabled = !dodatkowe;
+
+    // Wyłączanie wartości PZP, jeśli dodatkowe pola są wyłączone,
+    // mimo zaznaczonego 'tak'
+    if (dodatkowe) {
+        zamowieniePzpHandler();
+    } else {
+        toggleVisibility(zamowieniePzpKwota, false);
+        setContentEditable(zamowieniePzpKwota, false);
+    }
+}
+
+// 5. Handler - przełączanie pola Kateogria usług
+function rodzajeHandler() {
+    const visible = uslugiCheckbox.checked;
+
+    toggleVisibility(kategorieUslug, visible, true);
+}
+
+// 6.2. Handler - przełączanie pól rok, oznaczenie planu, wartość w planie
+function planZamowienHandler() {
+    const visible = planZamowienTak.checked;
+
+    toggleVisibility(planZamowienRok, visible, true);
+    toggleVisibility(planZamowienOznaczenia, visible, true);
+    toggleVisibility(planZamowienWartosci, visible, true);
+
+    setContentEditable(planZamowienOznaczenia, visible);
+    setContentEditable(planZamowienWartosci, visible);
+}
+
+// 7. Handler (dodatkowe) - przełączanie pola wartość PZP
 function zamowieniePzpHandler() {
-    zamowieniePzpKwota.classList.toggle("input", zamowieniePzpTak.checked);
-    zamowieniePzpKwota.contentEditable = zamowieniePzpTak.checked;
+    const czyPzp = zamowieniePzpTak.checked;
+    toggleVisibility(zamowieniePzpKwota, czyPzp);
+
+    setContentEditable(zamowieniePzpKwota, czyPzp);
 }
 
-function setContentEditable() {
-    document.querySelectorAll(`
-            #dodatkowe_cpv_text,
-            .wartosc-zamowienia,
-            .wartosc-zamowienia-euro,
-            .kwota-brutto,
-            .kwota-przeznaczona,
-            .zrodlo-finansowania-kwota,
-            #termin_wykonania_text
-            `
-        ).forEach((e) => {
-            try {
-                e.contentEditable = "plaintext-only";
-            } catch {
-                e.contentEditable = true;
-            }
-            e.addEventListener("keydown", dontAllowLinebreaks);
-        }
-    );
-    document.querySelectorAll(`
-            #nazwa_zamowienia_text,
-            #podstawa_ust_wartosci_text,
-            .wartosc-nazwa,
-            .zrodlo-finansowania,
-            #informacje_dodatkowe_text,
-            #zalaczniki_text
-            `
-        ).forEach((e) => {
-            try {
-                e.contentEditable = "plaintext-only";
-            } catch {
-                e.contentEditable = true;
-            }
-        }
-    );
+// Ustawienie pól jako edytowalne
+function setFormEditable() {
+    const textNoLinebreakSelectors = `
+        #dodatkowe_cpv_text,
+        .wartosc-zamowienia,
+        .wartosc-zamowienia-euro,
+        .kwota-brutto,
+        .kwota-przeznaczona,
+        .zrodlo-finansowania-kwota,
+        #termin_wykonania_text
+    `; // brak przecinka na końcu jest ważny
+
+    document.querySelectorAll(textNoLinebreakSelectors).forEach((e) => {
+        setContentEditable(e);
+        e.addEventListener("keydown", dontAllowLinebreaks);
+    });
+
+    const textBlockSelectors = `
+        #nazwa_zamowienia_text,
+        #podstawa_ust_wartosci_text,
+        .wartosc-nazwa,
+        .zrodlo-finansowania,
+        #informacje_dodatkowe_text,
+        #zalaczniki_text
+    `;
+
+    document.querySelectorAll(textBlockSelectors).forEach((e) => {
+        setContentEditable(e);
+    });
 }
 
-const nazwaJednostki = document.getElementById("nazwa_jednostki");
-function adminHandler() {
-    nazwaJednostki.classList.toggle("input", admin.checked);
-    nazwaJednostki.disabled = !admin.checked;
-
-    zamowieniePzpTak.parentElement.classList.toggle("input", admin.checked);
-    zamowieniePzpNie.parentElement.classList.toggle("input", admin.checked);
-
-    zamowieniePzpTak.disabled = !admin.checked;
-    zamowieniePzpNie.disabled = !admin.checked;
-    zamowieniePzpKwota.disabled = !admin.checked;
-}
-
-document.getElementById("download").addEventListener("click", async () => {
+downloadButton.addEventListener("click", async () => {
     // Setup the form data, get values form the visible fields with content-editable
     document.querySelectorAll("[type=hidden]").forEach((e) => {
         const visible = document.getElementById(e.id + "_text");
@@ -124,8 +181,7 @@ document.getElementById("download").addEventListener("click", async () => {
         }
     });
 
-    const form = document.getElementById("mainForm");
-    const formData = new FormData(form);
+    const formData = new FormData(mainForm);
 
     // Add disabled inputs to the form data, not included in the form by default
     const disabledInputs = document.querySelectorAll(
@@ -135,37 +191,45 @@ document.getElementById("download").addEventListener("click", async () => {
         formData.append(e.name, e.value);
     });
 
-    // Add czesci JSON to the form data
+    // Add czesci & źródła JSON to the form data
     if (czesciCount > 0) {
-        formData.append("czesci", JSON.stringify(czesciJson()));
+        const data = czesciJson();
+        formData.append("czesci", JSON.stringify(data));
     } else {
-        formData.append("zrodla", JSON.stringify(zrodlaFinansowaniaJson()));
+        const data = zrodlaFinansowaniaJson();
+        formData.append("zrodla", JSON.stringify(data));
     }
 
     const formBody = new URLSearchParams(formData).toString();
 
-    const response = await fetch("/generate-pdf", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formBody,
-    });
-
-    if (response.status !== 200) {
+    try {
+        const response = await fetch("/generate-pdf", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formBody,
+        });
+    
+        if (!response.ok) {
+            console.error(response.status);
+            alert("Wystąpił błąd podczas generowania wniosku");
+            return;
+        }
+    
+        const blob = await response.blob();
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "wniosek.pdf";
+        link.click();
+    } catch (error) {
+        console.error(error);
         alert("Wystąpił błąd podczas generowania wniosku");
-        return;
     }
-
-    const blob = await response.blob();
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(blob);
-    link.download = "wniosek.pdf";
-    link.click();
 });
 
 // 7. Zwraca wiersz wartości części
-function getWartoscCzesci(i, nazwa = "", wartosc = "0,00", wartoscEuro = "0,00") {
+function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro = DEFAULT_WARTOSC) {
     return `
         <section class="grid-row czesci-row">
             <div class="listing left input-padding-left">
@@ -181,7 +245,7 @@ function getWartoscCzesci(i, nazwa = "", wartosc = "0,00", wartoscEuro = "0,00")
 }
 
 // 10. Zwraca wiersz kwoty brutto
-function getKwotaBrutto(i, kwota = "0,00 zł") {
+function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row czesci-row">
             <div class="nowrap">Część ${i}:</div>
@@ -192,7 +256,7 @@ function getKwotaBrutto(i, kwota = "0,00 zł") {
 }
 
 // 11. Zwraca wiersz kwoty przeznaczonej
-function getKwotaPrzeznaczona(i, kwota = "0,00 zł", zrodla) {
+function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
     let zrodlaText = "";
     if (zrodla) {
         zrodlaText = zrodla.map((zrodlo) => getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota)).join("");
@@ -214,7 +278,7 @@ function getKwotaPrzeznaczona(i, kwota = "0,00 zł", zrodla) {
 }
 
 // 11+. Zwraca wiersz źródła finansowania (może być kilka dla części)
-function getZrodloFinansowania(zrodlo = "ŚNDS <br>Wniosek nr ", kwota = "0,00 zł") {
+function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
             <section class="block with-add-row">
@@ -231,38 +295,53 @@ function getZrodloFinansowania(zrodlo = "ŚNDS <br>Wniosek nr ", kwota = "0,00 z
 
 // Formularz części z JSONa
 function czesciFromJson(czesci) {
-    document.getElementById("mainForm").classList.toggle("bez-czesci");
-    document.getElementById("mainForm").classList.toggle("czesci");
+    mainForm.classList.toggle("bez-czesci");
+    mainForm.classList.toggle("czesci");
 
-    // 7.
-    const wartosciBarrier = document.getElementById("czesci-7-after");
-    // 10.
-    const kwotyBrutto = document.getElementById("czesci-brutto");
-    // 11.
-    const czesciKwoty = document.getElementById("czesci-11");
+    try {
+        if (!czesci || typeof czesci !== "object") {
+            throw new Error("Brak części");
+        }
 
-    const count = Object.keys(czesci).length;
-    for (let i = 1; i <= count; i++) {
-        const czesc = czesci[i];
+        const count = Object.keys(czesci).length;
 
-        wartosciBarrier.insertAdjacentHTML("beforebegin", getWartoscCzesci(i, czesc.nazwa, czesc.wartosc, czesc.wartoscEuro));
-        kwotyBrutto.insertAdjacentHTML("beforeend", getKwotaBrutto(i, czesc.brutto));
-        czesciKwoty.insertAdjacentHTML("beforeend", getKwotaPrzeznaczona(i, czesc.kwotaPrzeznaczona, czesc.zrodla));
-    }
-    setContentEditable();
+        if (count < MIN_CZESCI || count > MAX_CZESCI) {
+            throw new Error(`Nieprawidłowa liczba części (${MIN_CZESCI}-${MAX_CZESCI})`);
+        }
+
+        for (let i = 1; i <= count; i++) {
+            const czesc = czesci[i];
+
+            if (!czesc || typeof czesc !== "object") {
+                throw new Error(`Nieprawidłowa część ${i}`);
+            }
+
+            const nazwa = czesc.nazwa || "";
+            const wartosc = czesc.wartosc || DEFAULT_WARTOSC;
+            const wartoscEuro = czesc.wartoscEuro || DEFAULT_WARTOSC;
+            const brutto = czesc.brutto || DEFAULT_KWOTA;
+            const kwotaPrzeznaczona = czesc.kwotaPrzeznaczona || DEFAULT_KWOTA;
+            const zrodla = czesc.zrodla || [];
+
+            const wartosciText = getWartoscCzesci(i, nazwa, wartosc, wartoscEuro);
+            wartosciBarrier.insertAdjacentHTML("beforebegin", wartosciText);
+
+            const bruttoText = getKwotaBrutto(i, brutto);
+            kwotyBrutto.insertAdjacentHTML("beforeend", bruttoText);
+
+            const kwotyText = getKwotaPrzeznaczona(i, kwotaPrzeznaczona, zrodla);
+            czesciKwoty.insertAdjacentHTML("beforeend", kwotyText);
+        }
+        setFormEditable();
+    } catch (error) {
+        console.error(error);
+    }    
 }
 
 // Formualrz części z domyślnymi wartościami i zadaną liczbą części
 function naCzesci(count) {
-    document.getElementById("mainForm").classList.toggle("bez-czesci");
-    document.getElementById("mainForm").classList.toggle("czesci");
-
-    // 7.
-    const wartosciBarrier = document.getElementById("czesci-7-after");
-    // 10.
-    const kwotyBrutto = document.getElementById("czesci-brutto");
-    // 11.
-    const czesciKwoty = document.getElementById("czesci-11");
+    mainForm.classList.toggle("bez-czesci");
+    mainForm.classList.toggle("czesci");
 
     for (let i = 1; i <= count; i++) {
         wartosciBarrier.insertAdjacentHTML("beforebegin", getWartoscCzesci(i));
@@ -270,7 +349,7 @@ function naCzesci(count) {
         czesciKwoty.insertAdjacentHTML("beforeend", getKwotaPrzeznaczona(i));
     }
 
-    setContentEditable();
+    setFormEditable();
 }
 
 // Zwraca JSONa części
@@ -332,24 +411,31 @@ function zrodlaFinansowaniaJson() {
 
 // Ustaw źródła finansowania z JSONa
 function zrodlaFinansowaniaFromJson(zrodla) {
-    const zrodlaBezCzesci = document.getElementById("zrodla-finansowania-bez-czesci");
-
     // Usuń bieżące
     zrodlaBezCzesci.innerHTML = "";
+    if (!zrodla || !Array.isArray(zrodla)) {
+        console.error("Brak źródeł finansowania");
+        return;
+    }
 
     zrodla.forEach((zrodlo) => {
         const zrodloText = getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota);
         zrodlaBezCzesci.insertAdjacentHTML("beforeend", zrodloText);
     });
 
-    setContentEditable();
+    setFormEditable();
 }
 
 // Dodawanie źródła finansowania (zarówno bez części i części)
 function dodajZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
+    if (zrodlo.parentElement.childElementCount >= 8) {
+        alert("Błąd: Nie można dodać więcej niż 8 źródeł finansowania");
+        return;
+    }
+
     zrodlo.insertAdjacentHTML("afterend", getZrodloFinansowania());
-    setContentEditable();
+    setFormEditable();
 }
 
 // Usuwanie źródła finansowania (zarówno bez części i części)
@@ -359,6 +445,7 @@ function usunZrodlo(el) {
         alert("Błąd: Nie można usunąć ostatniego źródła finansowania");
         return;
     }
+
     confirm("Czy na pewno chcesz usunąć to źródło finansowania?") &&
     zrodlo.remove();
 }
@@ -366,6 +453,11 @@ function usunZrodlo(el) {
 // main
 
 // dodaj pierwsze źródło finansowania
-document.getElementById("zrodla-finansowania-bez-czesci").insertAdjacentHTML("beforeend", getZrodloFinansowania());
+zrodlaBezCzesci.insertAdjacentHTML("beforeend", getZrodloFinansowania());
 
-setContentEditable();
+// domyślne wartości
+planZamowienRok.value = new Date().getFullYear();
+const dzienZamowienia = document.getElementById("dzien_zamowienia");
+dzienZamowienia.value = new Date().toLocaleDateString("pl-PL") + " r."; // "dd.mm.yyyy r."
+
+setFormEditable();
