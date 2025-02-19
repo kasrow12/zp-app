@@ -7,10 +7,12 @@ const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 
 let czesciCount = 0;
 
+const downloadButton = document.getElementById("downloadPdf");
 const dodatkoweCheckbox = document.getElementById("dodatkoweCheckbox");
 
 const mainForm = document.getElementById("mainForm");
 const nazwaJednostki = document.getElementById("nazwa_jednostki");
+const nazwaZamowienia = document.getElementById("nazwa_zamowienia_text");
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
 
@@ -172,10 +174,10 @@ function setFormEditable() {
 }
 
 // Pobieranie PDFa
-async function downloadPdf(button) {
-    button.classList.add("loading");
-    const originalText = button.textContent;
-    button.textContent = "Generowanie...";
+async function downloadPdf() {
+    downloadButton.classList.add("loading");
+    const originalText = downloadButton.textContent;
+    downloadButton.textContent = "Generowanie...";
 
     // Setup the form data, get values form the visible fields with content-editable
     document.querySelectorAll("[type=hidden]").forEach((e) => {
@@ -215,22 +217,31 @@ async function downloadPdf(button) {
         });
 
         if (!response.ok) {
-            console.error(response.status);
-            alert("Wystąpił błąd podczas generowania wniosku");
+            const text = await response.text();
+            console.error(text);
+            alert(`Błąd podczas generowania wniosku: ${text}`);
             return;
         }
+
+        const nazwa = nazwaZamowienia.innerText
+            .trim()
+            .replace(/[^a-zA-Z0-9\s]/g, "") // Remove non-alphanumeric characters except spaces
+            .replace(/\s+/g, "_") // Replace spaces with underscores
+            .substring(0, 15); // Limit to 15 characters
+
+        const downloadName = `ZP_${nazwa}.pdf`;
 
         const blob = await response.blob();
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
-        link.download = "wniosek.pdf";
+        link.download = downloadName;
         link.click();
     } catch (error) {
         console.error(error);
         alert("Wystąpił błąd podczas generowania wniosku");
     } finally {
-        button.classList.remove("loading");
-        button.textContent = originalText;
+        downloadButton.classList.remove("loading");
+        downloadButton.textContent = originalText;
     }
 }
 
@@ -461,5 +472,6 @@ const dzienZamowienia = document.getElementById("dzien_zamowienia");
 dzienZamowienia.value = new Date().toLocaleDateString("pl-PL") + " r."; // "dd.mm.yyyy r."
 
 zamowieniePzpKwota.addEventListener("keydown", dontAllowLinebreaks);
+downloadButton.addEventListener("click", downloadPdf);
 
 setFormEditable();

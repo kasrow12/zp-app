@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZP-template</title>
+    <title>Generator wniosku ZP</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,7 +15,7 @@
         Edycja dodatkowych pól
     </label>
     <div class="no-print" style="position: relative;">
-        <button class="button" onclick="downloadPdf(this)">Generuj PDF</button>
+        <button class="button" id="downloadPdf">Generuj PDF</button>
     </div>
 
     <!-- Main form -->
@@ -360,7 +360,6 @@
                 <div class="color center border-left">data</div>
             </section>
         </section>
-
     </form>
     <div class="notes">
         <div><sup>1</sup> Należy wypełnić rubryki w kolorze białym, wskazane uzupełnienie na urządzeniu elektronicznym.</div>
