@@ -242,11 +242,11 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro 
         <section class="grid-row czesci-row">
             <div class="listing left input-padding-left">
                 <div class="padding-left">Część&nbsp;${i}:</div>
-                <div class="input wartosc-nazwa">${escapeHtml(nazwa)}</div>
+                <div class="input wartosc-nazwa">${escapeHtml(nazwa.trim())}</div>
             </div>
-            <div class="money input wartosc-zamowienia">${escapeHtml(wartosc)}</div>
+            <div class="money input wartosc-zamowienia">${escapeHtml(wartosc.trim())}</div>
             <div class="color">zł, co stanowi równowartość</div>
-            <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro)}</div>
+            <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro.trim())}</div>
             <div class="color">euro</div>
         </section>`
     .trim();
@@ -257,7 +257,7 @@ function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row czesci-row">
             <div>Część&nbsp;${i}:</div>
-            <div class="input money kwota-brutto">${escapeHtml(kwota)}</div>
+            <div class="input money kwota-brutto">${escapeHtml(kwota.trim())}</div>
             <div class="filler"></div>
         </section>`
     .trim();
@@ -276,7 +276,7 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
         <section class="grid-row czesci-row">
             <div class="mult-flex-row3 input-padding-right">
                 <div>Część&nbsp;${i}:</div>
-                <div class="input kwota-przeznaczona">${escapeHtml(kwota)}</div>
+                <div class="input kwota-przeznaczona">${escapeHtml(kwota.trim())}</div>
             </div>
             <section class="grid-11-row">
                 ${zrodlaText}
@@ -290,12 +290,12 @@ function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
             <section class="block with-add-row">
-                <div class="input listing left zrodlo-finansowania">${escapeHtml(zrodlo)}</div>
+                <div class="input listing left zrodlo-finansowania">${escapeHtml(zrodlo.trim())}</div>
                 <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
                 <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
             </section>
             <div class="money input-padding-right">
-                <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota)}</div>
+                <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div>
             </div>
         </section>`
     .trim();

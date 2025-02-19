@@ -11,7 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/generate-pdf', async (req, res) => {
-    console.log("🚀 ~ req.body:", req.body);
+    console.log(new Date(), 'POST /generate-pdf');
+    console.log(req.body);
 
     try {
         // navigate to the default form
