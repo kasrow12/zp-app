@@ -53,12 +53,12 @@ const setContentEditable = (elem, enable = true) => {
 // Bezpieczeństwo
 const escapeHtml = (unsafe) => {
     return unsafe
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+};
 
 // Przełącza widoczność elementu, z opcją jego ukrycia
 const toggleVisibility = (element, visible, withHidden) => {
@@ -188,9 +188,7 @@ async function downloadPdf(button) {
     const formData = new FormData(mainForm);
 
     // Add disabled inputs to the form data, not included in the form by default
-    const disabledInputs = document.querySelectorAll(
-        ".input-box:disabled, .checkbox-input:disabled:checked"
-    );
+    const disabledInputs = document.querySelectorAll(".input-box:disabled, .checkbox-input:disabled:checked");
     disabledInputs.forEach((e) => {
         formData.append(e.name, e.value);
     });
@@ -215,13 +213,13 @@ async function downloadPdf(button) {
             },
             body: formBody,
         });
-    
+
         if (!response.ok) {
             console.error(response.status);
             alert("Wystąpił błąd podczas generowania wniosku");
             return;
         }
-    
+
         const blob = await response.blob();
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
@@ -248,8 +246,7 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro 
             <div class="color">zł, co stanowi równowartość</div>
             <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro.trim())}</div>
             <div class="color">euro</div>
-        </section>`
-    .trim();
+        </section>`.trim();
 }
 
 // 10. Zwraca wiersz kwoty brutto
@@ -259,8 +256,7 @@ function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
             <div>Część&nbsp;${i}:</div>
             <div class="input money kwota-brutto">${escapeHtml(kwota.trim())}</div>
             <div class="filler"></div>
-        </section>`
-    .trim();
+        </section>`.trim();
 }
 
 // 11. Zwraca wiersz kwoty przeznaczonej
@@ -281,8 +277,7 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
             <section class="grid-11-row">
                 ${zrodlaText}
             </section>
-        </section>`
-    .trim();
+        </section>`.trim();
 }
 
 // 11+. Zwraca wiersz źródła finansowania (może być kilka dla części)
@@ -297,8 +292,7 @@ function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
             <div class="money input-padding-right">
                 <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div>
             </div>
-        </section>`
-    .trim();
+        </section>`.trim();
 }
 
 // Formularz części z JSONa
@@ -343,7 +337,7 @@ function czesciFromJson(czesci) {
         setFormEditable();
     } catch (error) {
         console.error(error);
-    }    
+    }
 }
 
 // Formualrz części z domyślnymi wartościami i zadaną liczbą części
@@ -384,7 +378,6 @@ function czesciJson() {
     // 11.
     const czesciKwoty = document.querySelectorAll("#czesci-11 > .czesci-row");
     czesciKwoty.forEach((czesc, i) => {
-
         const zrodlaFinansowania = [];
 
         const zrodla = czesc.querySelectorAll(".zrodlo-finansowania-row");
@@ -454,8 +447,7 @@ function usunZrodlo(el) {
         return;
     }
 
-    confirm("Czy na pewno chcesz usunąć to źródło finansowania?") &&
-    zrodlo.remove();
+    confirm("Czy na pewno chcesz usunąć to źródło finansowania?") && zrodlo.remove();
 }
 
 // main
