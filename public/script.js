@@ -7,7 +7,6 @@ const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 
 let czesciCount = 0;
 
-const downloadButton = document.getElementById("downloadPdf");
 const dodatkoweCheckbox = document.getElementById("dodatkoweCheckbox");
 
 const mainForm = document.getElementById("mainForm");
@@ -172,7 +171,12 @@ function setFormEditable() {
     });
 }
 
-downloadButton.addEventListener("click", async () => {
+// Pobieranie PDFa
+async function downloadPdf(button) {
+    button.classList.add("loading");
+    const originalText = button.textContent;
+    button.textContent = "Generowanie...";
+
     // Setup the form data, get values form the visible fields with content-editable
     document.querySelectorAll("[type=hidden]").forEach((e) => {
         const visible = document.getElementById(e.id + "_text");
@@ -192,11 +196,12 @@ downloadButton.addEventListener("click", async () => {
     });
 
     // Add czesci & źródła JSON to the form data
+    let data;
     if (czesciCount > 0) {
-        const data = czesciJson();
+        data = czesciJson();
         formData.append("czesci", JSON.stringify(data));
     } else {
-        const data = zrodlaFinansowaniaJson();
+        data = zrodlaFinansowaniaJson();
         formData.append("zrodla", JSON.stringify(data));
     }
 
@@ -225,8 +230,11 @@ downloadButton.addEventListener("click", async () => {
     } catch (error) {
         console.error(error);
         alert("Wystąpił błąd podczas generowania wniosku");
+    } finally {
+        button.classList.remove("loading");
+        button.textContent = originalText;
     }
-});
+}
 
 // 7. Zwraca wiersz wartości części
 function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro = DEFAULT_WARTOSC) {
@@ -248,7 +256,7 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro 
 function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row czesci-row">
-            <div class="nowrap">Część ${i}:</div>
+            <div>Część&nbsp;${i}:</div>
             <div class="input money kwota-brutto">${kwota}</div>
             <div class="filler"></div>
         </section>`

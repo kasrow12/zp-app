@@ -10,11 +10,13 @@
 
 <body>
     <button class="no-print button" onclick="setCzesci()" id="czesciButton">Części</button>
-    <label class="no-print">
+    <label class="no-print" style="border: 1px solid black;">
         <input type="checkbox" id="dodatkoweCheckbox" onchange="dodatkoweHandler()">
         Edycja dodatkowych pól
     </label>
-    <button class="no-print button" id="downloadPdf">Generuj PDF</button>
+    <div class="no-print" style="position: relative;">
+        <button class="button" onclick="downloadPdf(this)">Generuj PDF</button>
+    </div>
 
     <!-- Main form -->
     <form class="container bez-czesci" id="mainForm" action="#">
