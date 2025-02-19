@@ -1,7 +1,7 @@
 const MIN_CZESCI = 2;
 const MAX_CZESCI = 16;
 const DEFAULT_WARTOSC = "0,00";
-const DEFAULT_ZRODLO = "ŚNDS <br>Wniosek nr ";
+const DEFAULT_ZRODLO = "ŚNDS \nWniosek nr ";
 const MAX_ZRODLA_FINANSOWANIA = 8;
 const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 
@@ -241,12 +241,12 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro 
     return `
         <section class="grid-row czesci-row">
             <div class="listing left input-padding-left">
-                <div class="padding-left">Część ${i}:</div>
-                <div class="input wartosc-nazwa">${nazwa}</div>
+                <div class="padding-left">Część&nbsp;${i}:</div>
+                <div class="input wartosc-nazwa">${escapeHtml(nazwa)}</div>
             </div>
-            <div class="money input wartosc-zamowienia">${wartosc}</div>
+            <div class="money input wartosc-zamowienia">${escapeHtml(wartosc)}</div>
             <div class="color">zł, co stanowi równowartość</div>
-            <div class="money input wartosc-zamowienia-euro">${wartoscEuro}</div>
+            <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro)}</div>
             <div class="color">euro</div>
         </section>`
     .trim();
@@ -257,7 +257,7 @@ function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row czesci-row">
             <div>Część&nbsp;${i}:</div>
-            <div class="input money kwota-brutto">${kwota}</div>
+            <div class="input money kwota-brutto">${escapeHtml(kwota)}</div>
             <div class="filler"></div>
         </section>`
     .trim();
@@ -275,8 +275,8 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
     return `
         <section class="grid-row czesci-row">
             <div class="mult-flex-row3 input-padding-right">
-                <div>Część ${i}:</div>
-                <div class="input kwota-przeznaczona">${kwota}</div>
+                <div>Część&nbsp;${i}:</div>
+                <div class="input kwota-przeznaczona">${escapeHtml(kwota)}</div>
             </div>
             <section class="grid-11-row">
                 ${zrodlaText}
@@ -290,12 +290,12 @@ function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
             <section class="block with-add-row">
-                <div class="input listing left zrodlo-finansowania">${zrodlo}</div>
+                <div class="input listing left zrodlo-finansowania">${escapeHtml(zrodlo)}</div>
                 <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
                 <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
             </section>
             <div class="money input-padding-right">
-                <div class="input zrodlo-finansowania-kwota">${kwota}</div>
+                <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota)}</div>
             </div>
         </section>`
     .trim();
@@ -467,5 +467,7 @@ zrodlaBezCzesci.insertAdjacentHTML("beforeend", getZrodloFinansowania());
 planZamowienRok.value = new Date().getFullYear();
 const dzienZamowienia = document.getElementById("dzien_zamowienia");
 dzienZamowienia.value = new Date().toLocaleDateString("pl-PL") + " r."; // "dd.mm.yyyy r."
+
+zamowieniePzpKwota.addEventListener("keydown", dontAllowLinebreaks);
 
 setFormEditable();
