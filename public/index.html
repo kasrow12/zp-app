@@ -18,6 +18,10 @@
         <button class="button" id="downloadPdf">Generuj PDF</button>
     </div>
 
+    <span style="margin-left: 2em;">Legenda:
+        <span class="input" style="padding: 0.5em 1em; width: max-content;">pole do wpisania/zaznaczenia</span>
+    </span>
+
     <!-- Main form -->
     <form class="container bez-czesci" id="mainForm" action="#">
         <div class="lp">Lp.</div>
@@ -27,21 +31,39 @@
 
         <div class="lp">1.</div>
         <section class="two-column">
-            <div class="color">Nazwa jednostki wnioskodawcy</div>
+            <div class="color">
+                Nazwa jednostki wnioskodawcy
+                <span class="tooltip-icon">
+                    ?
+                    <span class="tooltip">Zawsze 'Politechnika Warszawska Samorząd Studentów'</span>
+                </span>
+            </div>
             <input class="input-box" id="nazwa_jednostki" name="nazwa_jednostki"
                 value="Politechnika Warszawska Samorząd Studentów" disabled>
         </section>
 
         <div class="lp">2.</div>
         <section class="two-column">
-            <div class="color">Nazwa zamówienia publicznego (przedmiotu zamówienia)</div>
+            <div class="color">
+                Nazwa zamówienia publicznego (przedmiotu zamówienia)
+                <span class="tooltip-icon">
+                    ?
+                    <span class="tooltip">Nazwa odnosząca się do tego zamówienia,<br>niekoniecznie ta sama co na wniosku Z2,<br>lecz podobna do nazwy tego konkretnego wydatku.<br><u>Musi kończyć się na 'dla studentów PW'</u>.</span>
+                </span>
+            </div>
             <div class="input" id="nazwa_zamowienia_text"></div>
             <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia">
         </section>
 
         <div class="lp">3.</div>
         <section class="two-column">
-            <div class="color">Rodzaj zamówienia</div>
+            <div class="color">
+                Rodzaj zamówienia
+                <span class="tooltip-icon">
+                    ?
+                    <span class="tooltip">Wybieramy dostawy lub usługi, można sprawdzić w spisie na swiatsspw.pl</span>
+                </span>
+            </div>
             <section class="flex-container input">
                 <label>
                     <input type="radio" id="rodzaj_roboty" class="checkbox-input" name="rodzaj_zamowienia"
@@ -70,6 +92,10 @@
         <div class="input-padding-right">
             <span>Główny kod CPV:</span><input class="input input-box" id="glowny_cpv" name="glowny_cpv"
                 value="" maxlength="10" required>
+            <span class="tooltip-icon">
+                ?
+                <span class="tooltip">Kod CPV ze spisu na swiatsspw.pl</span>
+            </span>
         </div>
 
         <div class="lp">4.2.</div>
@@ -80,8 +106,15 @@
 
         <div class="lp">5.</div>
         <section class="two-column">
-            <div class="color">Kategoria usług <span class="small">(dotyczy usług)</span></div>
+            <div class="color">
+                Kategoria usług <span class="small">(dotyczy usług)</span>
+                <span class="tooltip-icon">
+                    ?
+                    <span class="tooltip">Kategoria ze spisu na swiatsspw.pl lub od Przedstawiciela Merytorycznego</span>
+                </span>
+            </div>
             <input class="input-box" name="kategoria_uslug" id="kategoria_uslug" disabled>
+            
         </section>
 
         <div class="lp">6.</div>

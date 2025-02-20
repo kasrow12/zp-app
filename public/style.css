@@ -426,24 +426,51 @@ sup {
     font-size: 0.8em;
 }
 
+/* Tooltips */
+
+.tooltip-icon {
+    position: relative;
+    display: none;
+    cursor: pointer;
+    margin-left: 5px;
+    position: relative;
+    color: #86c7dd;
+    border: 1px solid #86c7dd;
+    background: #e5f8ffbf;
+    border-radius: 50%;
+    font-size: 0.7em;
+    width: 1.5em;
+    height: 1.5em;
+    line-height: 1.5em;
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+.tooltip-icon > .tooltip {
+    font-family: Arial, sans-serif;
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 125%;
+    transform: translateX(-50%);
+    background: #000000cc;
+    color: white;
+    padding: 0.3em 0.7em;
+    border-radius: 0.3em;
+    white-space: pre;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.tooltip-icon:hover > .tooltip {
+    opacity: 1;
+}
+
 /* Controls */
 
 .no-print {
     display: none;
-}
-
-@media screen {
-    body {
-        padding: 1em;
-    }
-
-    .input {
-        background-color: rgb(246, 221, 192);
-    }
-
-    .no-print {
-        display: inline-block;
-    }
 }
 
 button {
@@ -480,5 +507,23 @@ button {
 
     to {
         transform: rotate(1turn);
+    }
+}
+
+@media screen {
+    body {
+        padding: 1em;
+    }
+
+    .input {
+        background-color: rgb(246, 221, 192);
+    }
+
+    .no-print {
+        display: inline-block;
+    }
+
+    .tooltip-icon {
+        display: inline-block;
     }
 }
