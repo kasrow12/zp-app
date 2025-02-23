@@ -1,8 +1,9 @@
 const MIN_CZESCI = 2;
 const MAX_CZESCI = 16;
 const DEFAULT_WARTOSC = "0,00";
-const DEFAULT_ZRODLO = "ŚNDS \nWniosek nr ";
 const MAX_ZRODLA_FINANSOWANIA = 8;
+const DEFAULT_ZRODLO_INNE = "Dziekan";
+const DEFAULT_NR_WNIOSKU = `/${new Date().getFullYear()}`;
 const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 
 let czesciCount = 0;
@@ -79,7 +80,7 @@ function setCzesci() {
 
     const parsedCount = parseInt(count);
     if (isNaN(parsedCount) || parsedCount < MIN_CZESCI || parsedCount > MAX_CZESCI) {
-        alert("Podano nieprawidłową liczbę części (${MIN_CZESCI}-${MAX_CZESCI})");
+        alert(`Podano nieprawidłową liczbę części (${MIN_CZESCI}-${MAX_CZESCI})`);
         return;
     }
 
@@ -151,6 +152,7 @@ function setFormEditable() {
         .kwota-brutto,
         .kwota-przeznaczona,
         .zrodlo-finansowania-kwota,
+        .zrodlo-nr-wniosku,
         #termin_wykonania_text
     `; // brak przecinka na końcu jest ważny
 
@@ -163,7 +165,6 @@ function setFormEditable() {
         #nazwa_zamowienia_text,
         #podstawa_ust_wartosci_text,
         .wartosc-nazwa,
-        .zrodlo-finansowania,
         #informacje_dodatkowe_text,
         #zalaczniki_text
     `;
@@ -201,7 +202,8 @@ async function downloadPdf() {
         data = czesciJson();
         formData.append("czesci", JSON.stringify(data));
     } else {
-        data = zrodlaFinansowaniaJson();
+        const rows = document.querySelectorAll("#zrodla-finansowania-bez-czesci > .zrodlo-finansowania-row");
+        data = getZrodlaFinansowania(rows);
         formData.append("zrodla", JSON.stringify(data));
     }
 
@@ -249,8 +251,8 @@ async function downloadPdf() {
 function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro = DEFAULT_WARTOSC) {
     return `
         <section class="grid-row czesci-row">
-            <div class="listing left input-padding-left">
-                <div class="padding-left">Część&nbsp;${i}:</div>
+            <div class="listing left input-padding">
+                <div>Część&nbsp;${i}:</div>
                 <div class="input wartosc-nazwa">${escapeHtml(nazwa.trim())}</div>
             </div>
             <div class="money input wartosc-zamowienia">${escapeHtml(wartosc.trim())}</div>
@@ -274,14 +276,16 @@ function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
 function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
     let zrodlaText = "";
     if (zrodla) {
-        zrodlaText = zrodla.map((zrodlo) => getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota)).join("");
+        zrodlaText = zrodla
+            .map((zrodlo) => getZrodloFinansowania(zrodlo.selected, zrodlo.nrWniosku, zrodlo.inne, zrodlo.kwota))
+            .join("");
     } else {
         zrodlaText = getZrodloFinansowania();
     }
 
     return `
         <section class="grid-row czesci-row">
-            <div class="mult-flex-row3 input-padding-right">
+            <div class="mult-flex-row3 input-padding">
                 <div>Część&nbsp;${i}:</div>
                 <div class="input kwota-przeznaczona">${escapeHtml(kwota.trim())}</div>
             </div>
@@ -292,18 +296,67 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
 }
 
 // 11+. Zwraca wiersz źródła finansowania (może być kilka dla części)
-function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
+function getZrodloFinansowania(
+    selected = 0,
+    nrWniosku = DEFAULT_NR_WNIOSKU,
+    inne = DEFAULT_ZRODLO_INNE,
+    kwota = DEFAULT_KWOTA
+) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
-            <section class="block with-add-row">
-                <div class="input listing left zrodlo-finansowania">${escapeHtml(zrodlo.trim())}</div>
-                <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
-                <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
+            <section class="listing with-row-button left">
+                <select class="input zrodlo-finansowania" onchange="zrodloFinansowaniaHandler(this)" data-selected="${Number(
+                    selected
+                )}">
+                    <option selected disabled hidden>Wybierz źródło finansowania</option>
+                    <option>ŚnDS Majówki</option>
+                    <option>jakieś tam jeszcze losowe pule</option>
+                    <option>ŚnDS Bale</option>
+                    <option>ŚnDS Pikniki</option>
+                    <option>ŚnDS Owoce</option>
+                    <option>ŚnDS Środki trwałe, wyposażenie i amortyzacja</option>
+                    <option>Inne</option>
+                </select>
+                <div class="zrodlo-finansowania-text"></div>
+                <div class="small input-padding zrodlo-nr-wniosku-container">
+                    Wniosek nr <span class="input zrodlo-nr-wniosku">${escapeHtml(nrWniosku.trim())}</span>
+                </div>
+                <div class="input hidden zrodlo-finansowania-inne">${escapeHtml(inne.trim())}</div>
+                <span class="add-row-button row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
+                <span class="remove-row-button row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
             </section>
-            <div class="money input-padding-right">
+            <div class="money input-padding">
                 <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div>
             </div>
         </section>`.trim();
+}
+
+// Handler dla zmiany źródła finansowania,
+// albo źródło z selecta + wniosek nr,
+// albo "Inne" + do wpisania
+function zrodloFinansowaniaHandler(select) {
+    const selected = select.options[select.selectedIndex].text;
+    const row = select.parentElement;
+    const zrodloText = row.querySelector(".zrodlo-finansowania-text");
+    const zrodloInne = row.querySelector(".zrodlo-finansowania-inne");
+    const wniosekNrContainer = row.querySelector(".zrodlo-nr-wniosku-container");
+    const wniosekNr = row.querySelector(".zrodlo-nr-wniosku");
+
+    zrodloText.innerText = selected;
+
+    if (selected === "Inne") {
+        zrodloInne.classList.remove("hidden");
+        wniosekNrContainer.classList.add("hidden");
+        zrodloText.classList.add("hidden");
+        setContentEditable(zrodloInne);
+        setContentEditable(wniosekNr, false);
+    } else {
+        zrodloInne.classList.add("hidden");
+        wniosekNrContainer.classList.remove("hidden");
+        zrodloText.classList.remove("hidden");
+        setContentEditable(wniosekNr);
+        setContentEditable(zrodloInne, false);
+    }
 }
 
 // Formularz części z JSONa
@@ -345,7 +398,15 @@ function czesciFromJson(czesci) {
             const kwotyText = getKwotaPrzeznaczona(i, kwotaPrzeznaczona, zrodla);
             czesciKwoty.insertAdjacentHTML("beforeend", kwotyText);
         }
+
         setFormEditable();
+
+        // Ustaw źródła finansowania
+        const zrodlaSelects = document.querySelectorAll(".zrodlo-finansowania");
+        zrodlaSelects.forEach((select) => {
+            select.selectedIndex = select.dataset.selected;
+            zrodloFinansowaniaHandler(select);
+        });
     } catch (error) {
         console.error(error);
     }
@@ -389,31 +450,23 @@ function czesciJson() {
     // 11.
     const czesciKwoty = document.querySelectorAll("#czesci-11 > .czesci-row");
     czesciKwoty.forEach((czesc, i) => {
-        const zrodlaFinansowania = [];
-
         const zrodla = czesc.querySelectorAll(".zrodlo-finansowania-row");
-        zrodla.forEach((zrodlo) => {
-            zrodlaFinansowania.push({
-                zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
-                kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
-            });
-        });
-
-        czesciJson[i + 1].zrodla = zrodlaFinansowania;
+        czesciJson[i + 1].zrodla = getZrodlaFinansowania(zrodla);
         czesciJson[i + 1].kwotaPrzeznaczona = czesc.querySelector(".kwota-przeznaczona").innerText;
     });
 
     return czesciJson;
 }
 
-// Zwraca JSONa źródeł finansowania (bez części)
-function zrodlaFinansowaniaJson() {
+// Zwraca JSONa źródeł finansowania
+function getZrodlaFinansowania(rows) {
     const zrodla = [];
 
-    const zrodlaFinansowania = document.querySelectorAll("#zrodla-finansowania-bez-czesci > .zrodlo-finansowania-row");
-    zrodlaFinansowania.forEach((zrodlo) => {
+    rows.forEach((zrodlo) => {
         zrodla.push({
-            zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
+            selected: zrodlo.querySelector(".zrodlo-finansowania").selectedIndex,
+            nrWniosku: zrodlo.querySelector(".zrodlo-nr-wniosku").innerText,
+            inne: zrodlo.querySelector(".zrodlo-finansowania-inne").innerText,
             kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
         });
     });
@@ -431,8 +484,14 @@ function zrodlaFinansowaniaFromJson(zrodla) {
     }
 
     zrodla.forEach((zrodlo) => {
-        const zrodloText = getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota);
+        const zrodloText = getZrodloFinansowania(zrodlo.selected, zrodlo.nrWniosku, zrodlo.inne, zrodlo.kwota);
         zrodlaBezCzesci.insertAdjacentHTML("beforeend", zrodloText);
+    });
+
+    const zrodlaSelects = document.querySelectorAll(".zrodlo-finansowania");
+    zrodlaSelects.forEach((select) => {
+        select.selectedIndex = select.dataset.selected;
+        zrodloFinansowaniaHandler(select);
     });
 
     setFormEditable();
@@ -441,8 +500,8 @@ function zrodlaFinansowaniaFromJson(zrodla) {
 // Dodawanie źródła finansowania (zarówno bez części i części)
 function dodajZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
-    if (zrodlo.parentElement.childElementCount >= 8) {
-        alert("Błąd: Nie można dodać więcej niż 8 źródeł finansowania");
+    if (zrodlo.parentElement.childElementCount >= MAX_ZRODLA_FINANSOWANIA) {
+        alert(`Błąd: Nie można dodać więcej niż ${MAX_ZRODLA_FINANSOWANIA} źródeł finansowania`);
         return;
     }
 

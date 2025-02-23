@@ -216,20 +216,6 @@ form > * {
     grid-column: span 2;
 }
 
-.input-padding-left {
-    padding-left: 0;
-}
-
-.input-padding-right {
-    padding-right: 0;
-}
-
-.input-padding-left > .input,
-.input-padding-right > .input {
-    padding-left: 1ch;
-    padding-right: 1ch;
-}
-
 .padding-left {
     padding-left: 0.5em;
 }
@@ -285,19 +271,11 @@ form > * {
 
 /* Źródła finansowania */
 
-.with-add-row {
+.with-row-button {
     position: relative;
 }
 
-.with-add-row:hover > .add-row-button {
-    display: block;
-}
-
-.zrodlo-finansowania-row + .zrodlo-finansowania-row:hover .remove-row-button {
-    display: block;
-}
-
-.add-row-button {
+.row-button {
     display: none;
     position: absolute;
     bottom: -0.6em;
@@ -308,35 +286,45 @@ form > * {
     width: 1.2em;
     height: 1.2em;
     line-height: 1.3em;
-    background: rgb(218, 242, 182);
     left: 50%;
-    transform: translateX(-50%);
     user-select: none;
     transition: 0.1s;
+}
+
+.add-row-button {
+    background: rgb(199, 242, 135);
+    left: 50%;
+    transform: translateX(-100%);
 }
 
 .add-row-button:hover {
-    background: rgb(192, 242, 182);
+    background: rgb(165, 213, 165);
+}
+
+.add-row-button:active {
+    background: rgb(182, 209, 182);
+}
+
+.with-row-button:hover > .add-row-button {
+    display: block;
 }
 
 .remove-row-button {
-    display: none;
-    position: absolute;
-    color: red;
-    top: 0.1em;
-    right: 0.1em;
-    cursor: pointer;
-    width: 1em;
-    height: 1em;
-    line-height: 1em;
-    text-align: center;
-    user-select: none;
-    transition: 0.1s;
+    color: white;
+    background: rgb(220, 131, 131);
 }
 
 .remove-row-button:hover {
-    color: darkred;
+    background: rgb(212, 169, 169);
+}
+
+.remove-row-button:active {
     background: rgb(209, 182, 182);
+}
+
+.zrodlo-finansowania-row + .zrodlo-finansowania-row > .with-row-button:hover > .remove-row-button,
+.zrodlo-finansowania-row:has(+ .zrodlo-finansowania-row) > .with-row-button:hover > .remove-row-button {
+    display: block;
 }
 
 /* Części */
@@ -356,6 +344,27 @@ form > * {
 
 .czesci #kwota_przeznaczona_calosc {
     justify-content: end;
+}
+
+.zrodlo-finansowania-inne {
+    align-self: stretch;
+}
+
+.zrodlo-finansowania {
+    display: none;
+    font-size: inherit;
+    font-family: inherit;
+    margin: 0.4em 0.4em 0 0.4em;
+    padding: 0.2em;
+    border: 1px solid black;
+}
+
+.zrodlo-finansowania-text {
+    padding-bottom: 0;
+}
+
+.zrodlo-nr-wniosku-container {
+    padding-top: 0.2em;
 }
 
 /* Footer */
@@ -389,10 +398,6 @@ sup {
     justify-content: flex-end;
 }
 
-.hidden {
-    font-size: 0;
-}
-
 .display-none {
     display: none;
 }
@@ -424,6 +429,10 @@ sup {
 
 .small {
     font-size: 0.8em;
+}
+
+.hidden {
+    font-size: 0;
 }
 
 /* Tooltips */
@@ -525,5 +534,22 @@ button {
 
     .tooltip-icon {
         display: inline-block;
+    }
+
+    .input-padding > .input {
+        padding-left: 1ch;
+        padding-right: 1ch;
+    }
+
+    .zrodlo-finansowania {
+        display: block;
+    }
+
+    .zrodlo-finansowania-text {
+        display: none;
+    }
+
+    .zrodlo-finansowania-inne {
+        margin-top: 0.4em;
     }
 }
