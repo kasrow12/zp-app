@@ -39,7 +39,7 @@
                 </span>
             </div>
             <input class="input-box" id="nazwa_jednostki" name="nazwa_jednostki"
-                value="Politechnika Warszawska Samorząd Studentów" disabled>
+                value="Politechnika Warszawska Samorząd Studentów" disabled required>
         </section>
 
         <div class="lp">2.</div>
@@ -51,8 +51,8 @@
                     <span class="tooltip">Nazwa odnosząca się do tego zamówienia,<br>niekoniecznie ta sama co na wniosku Z2,<br>lecz podobna do nazwy tego konkretnego wydatku.<br><u>Musi kończyć się na 'dla studentów PW'</u>.</span>
                 </span>
             </div>
-            <div class="input" id="nazwa_zamowienia_text"></div>
-            <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia">
+            <div class="input" id="nazwa_zamowienia_text" title="Wypełnij to pole"></div>
+            <input type="hidden" id="nazwa_zamowienia" name="nazwa_zamowienia" required>
         </section>
 
         <div class="lp">3.</div>
@@ -142,8 +142,8 @@
                 <div class="listing hidden" id="plan_zamowien_oznaczenia_text"></div>
                 <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
                 <div class="color center">wartość w planie</div>
-                <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
                 <div class="money hidden" id="plan_zamowien_wartosci_text">0,00 zł</div>
+                <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
             </section>
         </section>
 
@@ -163,10 +163,10 @@
                     <p>zamówienia</p>
                 </label>
                 <input class="money input input-box" name="wartosc_zamowienia" id="wartosc_zamowienia"
-                    value="0,00" maxlength="10">
+                    value="0,00" maxlength="10" required>
                 <div class="color">zł, co stanowi równowartość</div>
                 <input class="money input input-box" name="wartosc_zamowienia_euro" id="wartosc_zamowienia_euro"
-                    value="0,00" maxlength="10">
+                    value="0,00" maxlength="10" required>
                 <div class="color">euro</div>
             </section>
 
@@ -205,13 +205,13 @@
         <div class="lp">8.</div>
         <div class="input-padding">
             Dzień ustalenia wartości zamówienia:&nbsp;<input class="input input-box" name="dzien_zamowienia"
-                id="dzien_zamowienia" maxlength="13">
+                id="dzien_zamowienia" maxlength="13" required>
         </div>
 
         <div class="lp">9.</div>
         <div class="input-padding">
             Podstawa ustalenia wartości zamówienia <span class="small">(wskazać odpowiedni dokument, np. planowane koszty, kosztorys inwestorski, program funkcjonalno-użytkowy)</span>:&nbsp;<span class="input" id="podstawa_ust_wartosci_text">rozeznanie rynku, porównanie ofert</span>
-            <input type="hidden" name="podstawa_ust_wartosci" id="podstawa_ust_wartosci">
+            <input type="hidden" name="podstawa_ust_wartosci" id="podstawa_ust_wartosci" required>
         </div>
         <div class="lp">10.</div>
         <section class="grid-container grid-10 no-borders" id="czesci-brutto">
@@ -220,7 +220,7 @@
             </section>
             <section class="grid-row">
                 <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto"
-                    value="0,00 zł">
+                    value="0,00 zł" required>
             </section>
 
             <!-- <czesci-row /> -->
@@ -236,7 +236,7 @@
             </section>
             <section class="grid-row">
                 <input class="input input-box" name="kwota_przeznaczona_calosc" id="kwota_przeznaczona_calosc"
-                    value="0,00 zł">
+                    value="0,00 zł" required>
                 <div class="color">źródła finansowania</div>
                 <div class="color right">kwoty</div>
             </section>
@@ -267,7 +267,7 @@
         <div class="lp">13.</div>
         <div class="input-padding">
             Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie gdy jest to uzasadnione obiektywną przyczyną)</span>:&nbsp;<span class="input" id="termin_wykonania_text"></span>
-            <input type="hidden" name="termin_wykonania" id="termin_wykonania">
+            <input type="hidden" name="termin_wykonania" id="termin_wykonania" required>
         </div>
 
         <div class="lp">14.</div>

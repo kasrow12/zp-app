@@ -21,6 +21,8 @@ const planZamowienTak = document.getElementById("plan_zamowien_tak");
 const planZamowienRok = document.getElementById("plan_zamowien_rok");
 const planZamowienOznaczenia = document.getElementById("plan_zamowien_oznaczenia_text");
 const planZamowienWartosci = document.getElementById("plan_zamowien_wartosci_text");
+const planZamowienOznaczeniaInput = document.getElementById("plan_zamowien_oznaczenia");
+const planZamowienWartosciInput = document.getElementById("plan_zamowien_wartosci");
 
 const zamowieniePzpTak = document.getElementById("zamowienie_pzp_tak");
 const zamowieniePzpNie = document.getElementById("zamowienie_pzp_nie");
@@ -121,6 +123,7 @@ function rodzajeHandler() {
     const visible = uslugiCheckbox.checked;
 
     toggleVisibility(kategorieUslug, visible, true);
+    kategorieUslug.required = visible;
 }
 
 // 6.2. Handler - przełączanie pól rok, oznaczenie planu, wartość w planie
@@ -133,6 +136,10 @@ function planZamowienHandler() {
 
     setContentEditable(planZamowienOznaczenia, visible);
     setContentEditable(planZamowienWartosci, visible);
+
+    planZamowienRok.required = visible;
+    planZamowienOznaczeniaInput.required = visible;
+    planZamowienWartosciInput.required = visible;
 }
 
 // 7. Handler (dodatkowe) - przełączanie pola wartość PZP
@@ -187,6 +194,13 @@ async function downloadPdf() {
             e.value = visible.innerText;
         }
     });
+
+    if (validateForm(mainForm) === false) {
+        alert("Formularz zawiera błędy. Sprawdź czy wszystkie wymagane pola są wypełnione.");
+        downloadButton.classList.remove("loading");
+        downloadButton.textContent = originalText;
+        return;
+    }
 
     const formData = new FormData(mainForm);
 
@@ -343,6 +357,7 @@ function zrodloFinansowaniaHandler(select) {
     const wniosekNr = row.querySelector(".zrodlo-nr-wniosku");
 
     zrodloText.innerText = selected;
+    select.classList.remove("invalid");
 
     if (selected === "Inne") {
         zrodloInne.classList.remove("hidden");
@@ -518,6 +533,33 @@ function usunZrodlo(el) {
     }
 
     confirm("Czy na pewno chcesz usunąć to źródło finansowania?") && zrodlo.remove();
+}
+
+// Walidacja formularza
+function validateForm(form) {
+    const required = form.querySelectorAll("[required]");
+    let valid = true;
+
+    required.forEach((el) => {
+        if (!el.value.trim()) {
+            el.classList.add("invalid");
+            valid = false;
+        } else {
+            el.classList.remove("invalid");
+        }
+    });
+
+    const zrodla = form.querySelectorAll(".zrodlo-finansowania");
+    zrodla.forEach((select) => {
+        if (select.selectedIndex === 0) {
+            select.classList.add("invalid");
+            valid = false;
+        } else {
+            select.classList.remove("invalid");
+        }
+    });
+
+    return valid;
 }
 
 // main

@@ -435,6 +435,15 @@ sup {
     font-size: 0;
 }
 
+.no-border-right {
+    border-right: 0;
+}
+
+.input:has(+ .invalid),
+.invalid {
+    background-color: #ffcccc !important;
+}
+
 /* Tooltips */
 
 .tooltip-icon {
