@@ -6,9 +6,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Maksymilian Soszyński",
   "license": "ISC",
-  "description": "",
+  "description": "Generator wniosków o udzielenie zamówienia publicznego dla Samorządu Studentów Politechniki Warszawskiej",
   "dependencies": {
     "express": "^4.21.0",
     "puppeteer": "^23.5.0",
