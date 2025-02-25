@@ -9,23 +9,28 @@
 </head>
 
 <body>
-    <button class="no-print button" onclick="setCzesci()" id="czesciButton">Części</button>
-    <label class="no-print" style="border: 1px solid black;">
-        <input type="checkbox" id="dodatkoweCheckbox" onchange="dodatkoweHandler()">
-        Edycja dodatkowych pól
-    </label>
-    <div class="no-print" style="position: relative;">
-        <button class="button" id="downloadPdf">Generuj PDF</button>
+    <div class="no-print controls">
+        <div>
+            <label class="control-label">
+                <input type="checkbox" id="dodatkoweCheckbox" onchange="dodatkoweHandler()">
+                Edycja dodatkowych pól
+            </label>
+            <button class="button" onclick="setCzesci()" id="czesciButton">Części</button>
+        </div>
+        <div>
+            <button class="full-button" id="downloadPdf">Generuj PDF</button>
+        </div>
+        <div class="legend">
+            Legenda:
+            <span class="input">pole do wpisania/zaznaczenia</span>
+            <input type="hidden">
+            <span class="invalid">błąd</span>
+        </div>
     </div>
 
-    <span  class="no-print" style="margin-left: 2em;">Legenda:
-        <span class="input" style="padding: 0.5em 1em; width: max-content;">pole do wpisania/zaznaczenia</span>
-        <input type="hidden">
-        <span class="invalid" style="padding: 0.5em 1em; width: max-content;">błąd</span>
-    </span>
-
+<div class="container">
     <!-- Main form -->
-    <form class="container bez-czesci" id="mainForm" action="#">
+    <form class="bez-czesci" id="mainForm" action="#">
         <div class="lp">Lp.</div>
         <div class="center color">Wniosek o udzielenie zamówienia publicznego<sup>1</sup></div>
 
@@ -144,7 +149,7 @@
                 <div class="listing hidden" id="plan_zamowien_oznaczenia_text"></div>
                 <input type="hidden" name="plan_zamowien_oznaczenia" id="plan_zamowien_oznaczenia">
                 <div class="color center">wartość w planie</div>
-                <div class="money hidden" id="plan_zamowien_wartosci_text">0,00 zł</div>
+                <div class="money hidden no-border-right" id="plan_zamowien_wartosci_text">0,00 zł</div>
                 <input type="hidden" name="plan_zamowien_wartosci" id="plan_zamowien_wartosci">
             </section>
         </section>
@@ -400,7 +405,8 @@
         <div><sup>1</sup> Należy wypełnić rubryki w kolorze białym, wskazane uzupełnienie na urządzeniu elektronicznym.</div>
         <div><sup>2</sup> Należy wskazać spośród listy: tryb podstawowy – bez negocjacji (art. 275 pkt 1 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje fakultatywne (art. 275 pkt 2 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje obligatoryjne (art. 275 pkt 3 ustawy Prawo zamówień publicznych); partnerstwo innowacyjne; negocjacje bez ogłoszenia; zamówienie z wolnej ręki; konkurs; umowa ramowa; przetarg nieograniczony; przetarg ograniczony; negocjacje z ogłoszeniem; dialog konkurencyjny; dynamiczny system zakupów.</div>
     </div>
-    <script src="script.js"></script>
+</div>
+<script src="script.js"></script>
 </body>
 
 </html>

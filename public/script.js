@@ -196,7 +196,7 @@ async function downloadPdf() {
     });
 
     if (validateForm(mainForm) === false) {
-        alert("Formularz zawiera błędy. Sprawdź czy wszystkie wymagane pola są wypełnione.");
+        alert("Sprawdź czy wszystkie wymagane pola są wypełnione.");
         downloadButton.classList.remove("loading");
         downloadButton.textContent = originalText;
         return;

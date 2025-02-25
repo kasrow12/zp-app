@@ -76,7 +76,7 @@ app.post("/generate-pdf", async (req, res) => {
 
         // generate the PDF
         const pdfBuffer = await page.pdf({
-            scale: 0.5,
+            scale: 0.49,
             printBackground: true,
             format: "A4",
             margin: {
