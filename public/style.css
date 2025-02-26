@@ -544,7 +544,6 @@ sup {
         font-size: 1em;
         cursor: pointer;
         margin-left: 0.5em;
-        transition: background-color 0.1s;
         border: 0;
     }
 
@@ -589,7 +588,6 @@ sup {
         padding: 0.7em;
         user-select: none;
         cursor: pointer;
-        transition: background-color 0.1s;
         background-color: #f0f0f0;
     }
 

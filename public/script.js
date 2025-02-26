@@ -16,6 +16,7 @@ const nazwaJednostki = document.getElementById("nazwa_jednostki");
 const nazwaZamowienia = document.getElementById("nazwa_zamowienia_text");
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
+const glownyCpv = document.getElementById("glowny_cpv");
 
 const planZamowienTak = document.getElementById("plan_zamowien_tak");
 const planZamowienRok = document.getElementById("plan_zamowien_rok");
@@ -562,9 +563,20 @@ function validateForm(form) {
     return valid;
 }
 
+// Walidacja CPV regex 00000000-0
+function validateCpvInput() {
+    const cpvPattern = /^\d{8}-\d$/;
+
+    if (!cpvPattern.test(glownyCpv.value)) {
+        glownyCpv.classList.add("invalid");
+    } else {
+        glownyCpv.classList.remove("invalid");
+    }
+}
+
 // main
 
-// dodaj pierwsze źródło finansowania
+// pierwsze źródło finansowania
 zrodlaBezCzesci.insertAdjacentHTML("beforeend", getZrodloFinansowania());
 
 // domyślne wartości
@@ -574,5 +586,6 @@ dzienZamowienia.value = new Date().toLocaleDateString("pl-PL") + " r."; // "dd.m
 
 zamowieniePzpKwota.addEventListener("keydown", dontAllowLinebreaks);
 downloadButton.addEventListener("click", downloadPdf);
+glownyCpv.addEventListener("input", validateCpvInput);
 
 setFormEditable();
