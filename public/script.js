@@ -186,7 +186,7 @@ function setFormEditable() {
 async function downloadPdf() {
     downloadButton.classList.add("loading");
     const originalText = downloadButton.textContent;
-    downloadButton.textContent = "Generowanie...";
+    // downloadButton.textContent = "Generowanie...";
 
     // Setup the form data, get values form the visible fields with content-editable
     document.querySelectorAll("[type=hidden]").forEach((e) => {
@@ -199,7 +199,7 @@ async function downloadPdf() {
     if (validateForm(mainForm) === false) {
         alert("Sprawdź czy wszystkie wymagane pola są wypełnione.");
         downloadButton.classList.remove("loading");
-        downloadButton.textContent = originalText;
+        // downloadButton.textContent = originalText;
         return;
     }
 
