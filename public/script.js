@@ -561,27 +561,28 @@ function usunZrodlo(el) {
 
 // Walidacja formularza
 function validateForm(form) {
-    const required = form.querySelectorAll("[required]");
+    // const required = form.querySelectorAll("[required]");
     let valid = true;
 
-    required.forEach((el) => {
-        if (!el.value.trim()) {
-            el.classList.add("invalid");
-            valid = false;
-        } else {
-            el.classList.remove("invalid");
-        }
-    });
+    // required.forEach((el) => {
+    //     if (!el.value.trim()) {
+    //         el.classList.add("invalid");
+    //         valid = false;
+    //     } else {
+    //         el.classList.remove("invalid");
+    //     }
+    // });
 
-    const zrodla = form.querySelectorAll(".zrodlo-finansowania");
-    zrodla.forEach((select) => {
-        if (select.selectedIndex === 0) {
-            select.classList.add("invalid");
-            valid = false;
-        } else {
-            select.classList.remove("invalid");
-        }
-    });
+    // const czesci = czesciCount > 0 ? "czesci-row" : "bez-czesci-row";
+    // const zrodla = form.querySelectorAll(`${czesci} .zrodlo-finansowania`);
+    // zrodla.forEach((select) => {
+    //     if (select.selectedIndex === 0) {
+    //         select.classList.add("invalid");
+    //         valid = false;
+    //     } else {
+    //         select.classList.remove("invalid");
+    //     }
+    // });
 
     return valid;
 }
