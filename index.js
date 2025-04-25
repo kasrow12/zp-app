@@ -58,6 +58,8 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("termin_wykonania_text").textContent = body.termin_wykonania.trim();
             document.getElementById("informacje_dodatkowe_text").textContent = body.informacje_dodatkowe.trim();
             document.getElementById("zalaczniki_text").textContent = body.zalaczniki.trim();
+
+            document.getElementById("osoba_wnioskujaca_text").textContent = body.osoba_wnioskujaca.trim();
         }, req.body);
 
         if (req.body.czesci != null) {

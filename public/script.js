@@ -161,7 +161,8 @@ function setFormEditable() {
         .kwota-przeznaczona,
         .zrodlo-finansowania-kwota,
         .zrodlo-nr-wniosku,
-        #termin_wykonania_text
+        #termin_wykonania_text,
+        #osoba_wnioskujaca_text
     `; // brak przecinka na końcu jest ważny
 
     document.querySelectorAll(textNoLinebreakSelectors).forEach((e) => {
