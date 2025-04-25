@@ -1,9 +1,11 @@
 const MIN_CZESCI = 2;
 const MAX_CZESCI = 16;
 const DEFAULT_WARTOSC = "0,00";
-const DEFAULT_ZRODLO = "ŚNDS \nWniosek nr ";
 const MAX_ZRODLA_FINANSOWANIA = 8;
+const DEFAULT_ZRODLO_INNE = "Dziekan";
+const DEFAULT_NR_WNIOSKU = `/${new Date().getFullYear()}`;
 const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
+const EURO_RATE = 4.6371;
 
 let czesciCount = 0;
 
@@ -15,11 +17,14 @@ const nazwaJednostki = document.getElementById("nazwa_jednostki");
 const nazwaZamowienia = document.getElementById("nazwa_zamowienia_text");
 const uslugiCheckbox = document.getElementById("rodzaj_uslugi");
 const kategorieUslug = document.getElementById("kategoria_uslug");
+const glownyCpv = document.getElementById("glowny_cpv");
 
 const planZamowienTak = document.getElementById("plan_zamowien_tak");
 const planZamowienRok = document.getElementById("plan_zamowien_rok");
 const planZamowienOznaczenia = document.getElementById("plan_zamowien_oznaczenia_text");
 const planZamowienWartosci = document.getElementById("plan_zamowien_wartosci_text");
+const planZamowienOznaczeniaInput = document.getElementById("plan_zamowien_oznaczenia");
+const planZamowienWartosciInput = document.getElementById("plan_zamowien_wartosci");
 
 const zamowieniePzpTak = document.getElementById("zamowienie_pzp_tak");
 const zamowieniePzpNie = document.getElementById("zamowienie_pzp_nie");
@@ -79,7 +84,7 @@ function setCzesci() {
 
     const parsedCount = parseInt(count);
     if (isNaN(parsedCount) || parsedCount < MIN_CZESCI || parsedCount > MAX_CZESCI) {
-        alert("Podano nieprawidłową liczbę części (${MIN_CZESCI}-${MAX_CZESCI})");
+        alert(`Podano nieprawidłową liczbę części (${MIN_CZESCI}-${MAX_CZESCI})`);
         return;
     }
 
@@ -120,6 +125,7 @@ function rodzajeHandler() {
     const visible = uslugiCheckbox.checked;
 
     toggleVisibility(kategorieUslug, visible, true);
+    kategorieUslug.required = visible;
 }
 
 // 6.2. Handler - przełączanie pól rok, oznaczenie planu, wartość w planie
@@ -132,6 +138,10 @@ function planZamowienHandler() {
 
     setContentEditable(planZamowienOznaczenia, visible);
     setContentEditable(planZamowienWartosci, visible);
+
+    planZamowienRok.required = visible;
+    planZamowienOznaczeniaInput.required = visible;
+    planZamowienWartosciInput.required = visible;
 }
 
 // 7. Handler (dodatkowe) - przełączanie pola wartość PZP
@@ -147,11 +157,12 @@ function setFormEditable() {
     const textNoLinebreakSelectors = `
         #dodatkowe_cpv_text,
         .wartosc-zamowienia,
-        .wartosc-zamowienia-euro,
         .kwota-brutto,
         .kwota-przeznaczona,
         .zrodlo-finansowania-kwota,
-        #termin_wykonania_text
+        .zrodlo-nr-wniosku,
+        #termin_wykonania_text,
+        #osoba_wnioskujaca_text
     `; // brak przecinka na końcu jest ważny
 
     document.querySelectorAll(textNoLinebreakSelectors).forEach((e) => {
@@ -163,7 +174,6 @@ function setFormEditable() {
         #nazwa_zamowienia_text,
         #podstawa_ust_wartosci_text,
         .wartosc-nazwa,
-        .zrodlo-finansowania,
         #informacje_dodatkowe_text,
         #zalaczniki_text
     `;
@@ -177,7 +187,7 @@ function setFormEditable() {
 async function downloadPdf() {
     downloadButton.classList.add("loading");
     const originalText = downloadButton.textContent;
-    downloadButton.textContent = "Generowanie...";
+    // downloadButton.textContent = "Generowanie...";
 
     // Setup the form data, get values form the visible fields with content-editable
     document.querySelectorAll("[type=hidden]").forEach((e) => {
@@ -186,6 +196,13 @@ async function downloadPdf() {
             e.value = visible.innerText;
         }
     });
+
+    if (validateForm(mainForm) === false) {
+        alert("Sprawdź czy wszystkie wymagane pola są wypełnione.");
+        downloadButton.classList.remove("loading");
+        // downloadButton.textContent = originalText;
+        return;
+    }
 
     const formData = new FormData(mainForm);
 
@@ -201,7 +218,8 @@ async function downloadPdf() {
         data = czesciJson();
         formData.append("czesci", JSON.stringify(data));
     } else {
-        data = zrodlaFinansowaniaJson();
+        const rows = document.querySelectorAll("#zrodla-finansowania-bez-czesci > .zrodlo-finansowania-row");
+        data = getZrodlaFinansowania(rows);
         formData.append("zrodla", JSON.stringify(data));
     }
 
@@ -246,16 +264,18 @@ async function downloadPdf() {
 }
 
 // 7. Zwraca wiersz wartości części
-function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro = DEFAULT_WARTOSC) {
+function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC) {
+    const euroValue = calculateEuro(wartosc);
+
     return `
         <section class="grid-row czesci-row">
-            <div class="listing left input-padding-left">
-                <div class="padding-left">Część&nbsp;${i}:</div>
+            <div class="listing left input-padding">
+                <div>Część&nbsp;${i}:</div>
                 <div class="input wartosc-nazwa">${escapeHtml(nazwa.trim())}</div>
             </div>
             <div class="money input wartosc-zamowienia">${escapeHtml(wartosc.trim())}</div>
             <div class="color">zł, co stanowi równowartość</div>
-            <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro.trim())}</div>
+            <div class="money wartosc-zamowienia-euro">${euroValue}</div>
             <div class="color">euro</div>
         </section>`.trim();
 }
@@ -274,14 +294,16 @@ function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
 function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
     let zrodlaText = "";
     if (zrodla) {
-        zrodlaText = zrodla.map((zrodlo) => getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota)).join("");
+        zrodlaText = zrodla
+            .map((zrodlo) => getZrodloFinansowania(zrodlo.selected, zrodlo.nrWniosku, zrodlo.inne, zrodlo.kwota))
+            .join("");
     } else {
         zrodlaText = getZrodloFinansowania();
     }
 
     return `
         <section class="grid-row czesci-row">
-            <div class="mult-flex-row3 input-padding-right">
+            <div class="mult-flex-row3 input-padding">
                 <div>Część&nbsp;${i}:</div>
                 <div class="input kwota-przeznaczona">${escapeHtml(kwota.trim())}</div>
             </div>
@@ -292,18 +314,91 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
 }
 
 // 11+. Zwraca wiersz źródła finansowania (może być kilka dla części)
-function getZrodloFinansowania(zrodlo = DEFAULT_ZRODLO, kwota = DEFAULT_KWOTA) {
+function getZrodloFinansowania(
+    selected = 0,
+    nrWniosku = DEFAULT_NR_WNIOSKU,
+    inne = DEFAULT_ZRODLO_INNE,
+    kwota = DEFAULT_KWOTA
+) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
-            <section class="block with-add-row">
-                <div class="input listing left zrodlo-finansowania">${escapeHtml(zrodlo.trim())}</div>
-                <span class="add-row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
-                <span class="remove-row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
+            <section class="listing with-row-button left">
+                <select class="input zrodlo-finansowania" onchange="zrodloFinansowaniaHandler(this)" data-selected="${Number(
+                    selected
+                )}">
+                    <option selected disabled hidden>Wybierz źródło finansowania</option>
+                    <option>ŚnDS Akademikalia</option>
+                    <option>ŚnDS Bale</option>
+                    <option>ŚnDS Delegacje i wyjazdy na konferencje</option>
+                    <option>ŚnDS Inicjatywy kulturalne</option>
+                    <option>ŚnDS Inicjatywy sportowe</option>
+                    <option>ŚnDS Budżet Kreatywny</option>
+                    <option>ŚnDS Integracje akademikowe</option>
+                    <option>ŚnDS Majówki</option>
+                    <option>ŚnDS Organizacja konferencji</option>
+                    <option>ŚnDS Organizacja targów</option>
+                    <option>ŚnDS Otrzęsiny</option>
+                    <option>ŚnDS Pikniki</option>
+                    <option>ŚnDS Projekty centralne</option>
+                    <option>ŚnDS Juwenalia</option>
+                    <option>ŚnDS Promocja</option>
+                    <option>ŚnDS Szkolenia</option>
+                    <option>ŚnDS Środki trwałe, wyposażenie, amortyzacja</option>
+                    <option>ŚnDS Wyjazdy wakacyjne</option>
+                    <option>ŚnDS Wyjazdy zimowe</option>
+                    <option>ŚnDS Bilety do instytucji kultury</option>
+                    <option>ŚnDS Wymiany zagraniczne</option>
+                    <option>ŚnDS Zerówki i integrale</option>
+                    <option>ŚnDS Infrastruktura SSPW</option>
+                    <option>ŚnDS Rezerwa Prorektora</option>
+                    <option>ŚnDS Rezerwa KFG</option>
+                    <option>ŚnDS Eksperymenty Naukowe</option>
+                    <option>ŚnDS Sporty Akademickie</option>
+                    <option>ŚnDS Młodzi naukowcy</option>
+                    <option>ŚnDS Filia w Płocku</option>
+                    <option>Inne</option>
+                </select>
+                <div class="zrodlo-finansowania-text"></div>
+                <div class="small input-padding zrodlo-nr-wniosku-container">
+                    Wniosek nr <span class="input zrodlo-nr-wniosku">${escapeHtml(nrWniosku.trim())}</span>
+                </div>
+                <div class="input hidden zrodlo-finansowania-inne">${escapeHtml(inne.trim())}</div>
+                <span class="add-row-button row-button" onclick="dodajZrodlo(this)" title="Dodaj kolejne źródło">+</span>
+                <span class="remove-row-button row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
             </section>
-            <div class="money input-padding-right">
+            <div class="money input-padding">
                 <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div>
             </div>
         </section>`.trim();
+}
+
+// Handler dla zmiany źródła finansowania,
+// albo źródło z selecta + wniosek nr,
+// albo "Inne" + do wpisania
+function zrodloFinansowaniaHandler(select) {
+    const selected = select.options[select.selectedIndex].text;
+    const row = select.parentElement;
+    const zrodloText = row.querySelector(".zrodlo-finansowania-text");
+    const zrodloInne = row.querySelector(".zrodlo-finansowania-inne");
+    const wniosekNrContainer = row.querySelector(".zrodlo-nr-wniosku-container");
+    const wniosekNr = row.querySelector(".zrodlo-nr-wniosku");
+
+    zrodloText.innerText = selected;
+    select.classList.remove("invalid");
+
+    if (selected === "Inne") {
+        zrodloInne.classList.remove("hidden");
+        wniosekNrContainer.classList.add("hidden");
+        zrodloText.classList.add("hidden");
+        setContentEditable(zrodloInne);
+        setContentEditable(wniosekNr, false);
+    } else {
+        zrodloInne.classList.add("hidden");
+        wniosekNrContainer.classList.remove("hidden");
+        zrodloText.classList.remove("hidden");
+        setContentEditable(wniosekNr);
+        setContentEditable(zrodloInne, false);
+    }
 }
 
 // Formularz części z JSONa
@@ -331,12 +426,11 @@ function czesciFromJson(czesci) {
 
             const nazwa = czesc.nazwa || "";
             const wartosc = czesc.wartosc || DEFAULT_WARTOSC;
-            const wartoscEuro = czesc.wartoscEuro || DEFAULT_WARTOSC;
             const brutto = czesc.brutto || DEFAULT_KWOTA;
             const kwotaPrzeznaczona = czesc.kwotaPrzeznaczona || DEFAULT_KWOTA;
             const zrodla = czesc.zrodla || [];
 
-            const wartosciText = getWartoscCzesci(i, nazwa, wartosc, wartoscEuro);
+            const wartosciText = getWartoscCzesci(i, nazwa, wartosc);
             wartosciBarrier.insertAdjacentHTML("beforebegin", wartosciText);
 
             const bruttoText = getKwotaBrutto(i, brutto);
@@ -345,7 +439,15 @@ function czesciFromJson(czesci) {
             const kwotyText = getKwotaPrzeznaczona(i, kwotaPrzeznaczona, zrodla);
             czesciKwoty.insertAdjacentHTML("beforeend", kwotyText);
         }
+
         setFormEditable();
+
+        // Ustaw źródła finansowania
+        const zrodlaSelects = document.querySelectorAll(".zrodlo-finansowania");
+        zrodlaSelects.forEach((select) => {
+            select.selectedIndex = select.dataset.selected;
+            zrodloFinansowaniaHandler(select);
+        });
     } catch (error) {
         console.error(error);
     }
@@ -389,31 +491,23 @@ function czesciJson() {
     // 11.
     const czesciKwoty = document.querySelectorAll("#czesci-11 > .czesci-row");
     czesciKwoty.forEach((czesc, i) => {
-        const zrodlaFinansowania = [];
-
         const zrodla = czesc.querySelectorAll(".zrodlo-finansowania-row");
-        zrodla.forEach((zrodlo) => {
-            zrodlaFinansowania.push({
-                zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
-                kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
-            });
-        });
-
-        czesciJson[i + 1].zrodla = zrodlaFinansowania;
+        czesciJson[i + 1].zrodla = getZrodlaFinansowania(zrodla);
         czesciJson[i + 1].kwotaPrzeznaczona = czesc.querySelector(".kwota-przeznaczona").innerText;
     });
 
     return czesciJson;
 }
 
-// Zwraca JSONa źródeł finansowania (bez części)
-function zrodlaFinansowaniaJson() {
+// Zwraca JSONa źródeł finansowania
+function getZrodlaFinansowania(rows) {
     const zrodla = [];
 
-    const zrodlaFinansowania = document.querySelectorAll("#zrodla-finansowania-bez-czesci > .zrodlo-finansowania-row");
-    zrodlaFinansowania.forEach((zrodlo) => {
+    rows.forEach((zrodlo) => {
         zrodla.push({
-            zrodlo: zrodlo.querySelector(".zrodlo-finansowania").innerText,
+            selected: zrodlo.querySelector(".zrodlo-finansowania").selectedIndex,
+            nrWniosku: zrodlo.querySelector(".zrodlo-nr-wniosku").innerText,
+            inne: zrodlo.querySelector(".zrodlo-finansowania-inne").innerText,
             kwota: zrodlo.querySelector(".zrodlo-finansowania-kwota").innerText,
         });
     });
@@ -431,8 +525,14 @@ function zrodlaFinansowaniaFromJson(zrodla) {
     }
 
     zrodla.forEach((zrodlo) => {
-        const zrodloText = getZrodloFinansowania(zrodlo.zrodlo, zrodlo.kwota);
+        const zrodloText = getZrodloFinansowania(zrodlo.selected, zrodlo.nrWniosku, zrodlo.inne, zrodlo.kwota);
         zrodlaBezCzesci.insertAdjacentHTML("beforeend", zrodloText);
+    });
+
+    const zrodlaSelects = document.querySelectorAll(".zrodlo-finansowania");
+    zrodlaSelects.forEach((select) => {
+        select.selectedIndex = select.dataset.selected;
+        zrodloFinansowaniaHandler(select);
     });
 
     setFormEditable();
@@ -441,8 +541,8 @@ function zrodlaFinansowaniaFromJson(zrodla) {
 // Dodawanie źródła finansowania (zarówno bez części i części)
 function dodajZrodlo(el) {
     const zrodlo = el.parentElement.parentElement;
-    if (zrodlo.parentElement.childElementCount >= 8) {
-        alert("Błąd: Nie można dodać więcej niż 8 źródeł finansowania");
+    if (zrodlo.parentElement.childElementCount >= MAX_ZRODLA_FINANSOWANIA) {
+        alert(`Błąd: Nie można dodać więcej niż ${MAX_ZRODLA_FINANSOWANIA} źródeł finansowania`);
         return;
     }
 
@@ -461,9 +561,61 @@ function usunZrodlo(el) {
     confirm("Czy na pewno chcesz usunąć to źródło finansowania?") && zrodlo.remove();
 }
 
+// Walidacja formularza
+function validateForm(form) {
+    // const required = form.querySelectorAll("[required]");
+    let valid = true;
+
+    // required.forEach((el) => {
+    //     if (!el.value.trim()) {
+    //         el.classList.add("invalid");
+    //         valid = false;
+    //     } else {
+    //         el.classList.remove("invalid");
+    //     }
+    // });
+
+    // const czesci = czesciCount > 0 ? "czesci-row" : "bez-czesci-row";
+    // const zrodla = form.querySelectorAll(`${czesci} .zrodlo-finansowania`);
+    // zrodla.forEach((select) => {
+    //     if (select.selectedIndex === 0) {
+    //         select.classList.add("invalid");
+    //         valid = false;
+    //     } else {
+    //         select.classList.remove("invalid");
+    //     }
+    // });
+
+    return valid;
+}
+
+// Walidacja CPV regex 00000000-0
+function validateCpvInput() {
+    const cpvPattern = /^\d{8}-\d$/;
+
+    if (!cpvPattern.test(glownyCpv.value)) {
+        glownyCpv.classList.add("invalid");
+    } else {
+        glownyCpv.classList.remove("invalid");
+    }
+}
+
+// Przelicza string PLN na EUR
+function calculateEuro(plnValue) {
+    const numericString = String(plnValue).replace(/\s/g, "").replace(",", ".");
+    const pln = parseFloat(numericString);
+
+    if (isNaN(pln) || pln < 0) {
+        return DEFAULT_WARTOSC;
+    }
+
+    const euro = pln / EURO_RATE;
+    return euro.toFixed(2).replace(".", ",");
+}
+
 // main
 
-// dodaj pierwsze źródło finansowania
+// pierwsze źródło finansowania
 zrodlaBezCzesci.insertAdjacentHTML("beforeend", getZrodloFinansowania());
 
 // domyślne wartości
@@ -473,5 +625,33 @@ dzienZamowienia.value = new Date().toLocaleDateString("pl-PL") + " r."; // "dd.m
 
 zamowieniePzpKwota.addEventListener("keydown", dontAllowLinebreaks);
 downloadButton.addEventListener("click", downloadPdf);
+glownyCpv.addEventListener("input", validateCpvInput);
 
 setFormEditable();
+
+const wartoscZamowieniaInput = document.getElementById("wartosc_zamowienia");
+const wartoscZamowieniaEuro = document.getElementById("wartosc_zamowienia_euro");
+
+const updateEuro = () => {
+    const plnValue = wartoscZamowieniaInput.value;
+    wartoscZamowieniaEuro.innerText = calculateEuro(plnValue);
+};
+
+wartoscZamowieniaInput.addEventListener("input", updateEuro);
+updateEuro();
+
+const czesci7Section = document.getElementById("czesci-7");
+czesci7Section.addEventListener("input", (event) => {
+    if (event.target.matches(".czesci-row .wartosc-zamowienia")) {
+        const plnDiv = event.target;
+        const czesciRow = plnDiv.closest(".czesci-row");
+
+        if (czesciRow) {
+            const euroDiv = czesciRow.querySelector(".wartosc-zamowienia-euro");
+            if (euroDiv) {
+                const plnValue = plnDiv.innerText;
+                euroDiv.innerText = calculateEuro(plnValue);
+            }
+        }
+    }
+});

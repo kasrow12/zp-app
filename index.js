@@ -43,7 +43,7 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("plan_zamowien_wartosci_text").textContent = body.plan_zamowien_wartosci.trim();
 
             document.getElementById("wartosc_zamowienia").value = body.wartosc_zamowienia.trim();
-            document.getElementById("wartosc_zamowienia_euro").value = body.wartosc_zamowienia_euro.trim();
+            updateEuro();
 
             document.getElementById(body.zamowienie_pzp).checked = true;
             zamowieniePzpHandler();
@@ -58,6 +58,8 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("termin_wykonania_text").textContent = body.termin_wykonania.trim();
             document.getElementById("informacje_dodatkowe_text").textContent = body.informacje_dodatkowe.trim();
             document.getElementById("zalaczniki_text").textContent = body.zalaczniki.trim();
+
+            document.getElementById("osoba_wnioskujaca_text").textContent = body.osoba_wnioskujaca.trim();
         }, req.body);
 
         if (req.body.czesci != null) {
@@ -76,7 +78,7 @@ app.post("/generate-pdf", async (req, res) => {
 
         // generate the PDF
         const pdfBuffer = await page.pdf({
-            scale: 0.5,
+            scale: 0.49,
             printBackground: true,
             format: "A4",
             margin: {
