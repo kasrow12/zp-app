@@ -43,7 +43,7 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("plan_zamowien_wartosci_text").textContent = body.plan_zamowien_wartosci.trim();
 
             document.getElementById("wartosc_zamowienia").value = body.wartosc_zamowienia.trim();
-            document.getElementById("wartosc_zamowienia_euro").value = body.wartosc_zamowienia_euro.trim();
+            updateEuro();
 
             document.getElementById(body.zamowienie_pzp).checked = true;
             zamowieniePzpHandler();

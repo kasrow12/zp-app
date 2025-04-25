@@ -5,6 +5,7 @@ const MAX_ZRODLA_FINANSOWANIA = 8;
 const DEFAULT_ZRODLO_INNE = "Dziekan";
 const DEFAULT_NR_WNIOSKU = `/${new Date().getFullYear()}`;
 const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
+const EURO_RATE = 4.6371;
 
 let czesciCount = 0;
 
@@ -156,7 +157,6 @@ function setFormEditable() {
     const textNoLinebreakSelectors = `
         #dodatkowe_cpv_text,
         .wartosc-zamowienia,
-        .wartosc-zamowienia-euro,
         .kwota-brutto,
         .kwota-przeznaczona,
         .zrodlo-finansowania-kwota,
@@ -263,7 +263,9 @@ async function downloadPdf() {
 }
 
 // 7. Zwraca wiersz wartości części
-function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro = DEFAULT_WARTOSC) {
+function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC) {
+    const euroValue = calculateEuro(wartosc);
+
     return `
         <section class="grid-row czesci-row">
             <div class="listing left input-padding">
@@ -272,7 +274,7 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC, wartoscEuro 
             </div>
             <div class="money input wartosc-zamowienia">${escapeHtml(wartosc.trim())}</div>
             <div class="color">zł, co stanowi równowartość</div>
-            <div class="money input wartosc-zamowienia-euro">${escapeHtml(wartoscEuro.trim())}</div>
+            <div class="money wartosc-zamowienia-euro">${euroValue}</div>
             <div class="color">euro</div>
         </section>`.trim();
 }
@@ -423,12 +425,11 @@ function czesciFromJson(czesci) {
 
             const nazwa = czesc.nazwa || "";
             const wartosc = czesc.wartosc || DEFAULT_WARTOSC;
-            const wartoscEuro = czesc.wartoscEuro || DEFAULT_WARTOSC;
             const brutto = czesc.brutto || DEFAULT_KWOTA;
             const kwotaPrzeznaczona = czesc.kwotaPrzeznaczona || DEFAULT_KWOTA;
             const zrodla = czesc.zrodla || [];
 
-            const wartosciText = getWartoscCzesci(i, nazwa, wartosc, wartoscEuro);
+            const wartosciText = getWartoscCzesci(i, nazwa, wartosc);
             wartosciBarrier.insertAdjacentHTML("beforebegin", wartosciText);
 
             const bruttoText = getKwotaBrutto(i, brutto);
@@ -598,6 +599,19 @@ function validateCpvInput() {
     }
 }
 
+// Przelicza string PLN na EUR
+function calculateEuro(plnValue) {
+    const numericString = String(plnValue).replace(/\s/g, "").replace(",", ".");
+    const pln = parseFloat(numericString);
+
+    if (isNaN(pln) || pln < 0) {
+        return DEFAULT_WARTOSC;
+    }
+
+    const euro = pln / EURO_RATE;
+    return euro.toFixed(2).replace(".", ",");
+}
+
 // main
 
 // pierwsze źródło finansowania
@@ -613,3 +627,30 @@ downloadButton.addEventListener("click", downloadPdf);
 glownyCpv.addEventListener("input", validateCpvInput);
 
 setFormEditable();
+
+const wartoscZamowieniaInput = document.getElementById("wartosc_zamowienia");
+const wartoscZamowieniaEuro = document.getElementById("wartosc_zamowienia_euro");
+
+const updateEuro = () => {
+    const plnValue = wartoscZamowieniaInput.value;
+    wartoscZamowieniaEuro.innerText = calculateEuro(plnValue);
+};
+
+wartoscZamowieniaInput.addEventListener("input", updateEuro);
+updateEuro();
+
+const czesci7Section = document.getElementById("czesci-7");
+czesci7Section.addEventListener("input", (event) => {
+    if (event.target.matches(".czesci-row .wartosc-zamowienia")) {
+        const plnDiv = event.target;
+        const czesciRow = plnDiv.closest(".czesci-row");
+
+        if (czesciRow) {
+            const euroDiv = czesciRow.querySelector(".wartosc-zamowienia-euro");
+            if (euroDiv) {
+                const plnValue = plnDiv.innerText;
+                euroDiv.innerText = calculateEuro(plnValue);
+            }
+        }
+    }
+});
