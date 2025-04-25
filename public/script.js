@@ -324,12 +324,35 @@ function getZrodloFinansowania(
                     selected
                 )}">
                     <option selected disabled hidden>Wybierz źródło finansowania</option>
-                    <option>ŚnDS Majówki</option>
-                    <option>jakieś tam jeszcze losowe pule</option>
+                    <option>ŚnDS Akademikalia</option>
                     <option>ŚnDS Bale</option>
+                    <option>ŚnDS Delegacje i wyjazdy na konferencje</option>
+                    <option>ŚnDS Inicjatywy kulturalne</option>
+                    <option>ŚnDS Inicjatywy sportowe</option>
+                    <option>ŚnDS Budżet Kreatywny</option>
+                    <option>ŚnDS Integracje akademikowe</option>
+                    <option>ŚnDS Majówki</option>
+                    <option>ŚnDS Organizacja konferencji</option>
+                    <option>ŚnDS Organizacja targów</option>
+                    <option>ŚnDS Otrzęsiny</option>
                     <option>ŚnDS Pikniki</option>
-                    <option>ŚnDS Owoce</option>
-                    <option>ŚnDS Środki trwałe, wyposażenie i amortyzacja</option>
+                    <option>ŚnDS Projekty centralne</option>
+                    <option>ŚnDS Juwenalia</option>
+                    <option>ŚnDS Promocja</option>
+                    <option>ŚnDS Szkolenia</option>
+                    <option>ŚnDS Środki trwałe, wyposażenie, amortyzacja</option>
+                    <option>ŚnDS Wyjazdy wakacyjne</option>
+                    <option>ŚnDS Wyjazdy zimowe</option>
+                    <option>ŚnDS Bilety do instytucji kultury</option>
+                    <option>ŚnDS Wymiany zagraniczne</option>
+                    <option>ŚnDS Zerówki i integrale</option>
+                    <option>ŚnDS Infrastruktura SSPW</option>
+                    <option>ŚnDS Rezerwa Prorektora</option>
+                    <option>ŚnDS Rezerwa KFG</option>
+                    <option>ŚnDS Eksperymenty Naukowe</option>
+                    <option>ŚnDS Sporty Akademickie</option>
+                    <option>ŚnDS Młodzi naukowcy</option>
+                    <option>ŚnDS Filia w Płocku</option>
                     <option>Inne</option>
                 </select>
                 <div class="zrodlo-finansowania-text"></div>
