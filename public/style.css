@@ -155,13 +155,6 @@ form > * {
     justify-content: center;
 }
 
-.money {
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    text-align: right;
-}
-
 #glowny_cpv {
     width: 14ch;
 }
@@ -179,7 +172,7 @@ form > * {
 }
 
 .grid-7 {
-    grid-template-columns: 1fr 16ch max-content 16ch 12ch;
+    grid-template-columns: 1fr 16ch max-content 15ch 15ch;
 }
 
 /* zł, co stanowi równowartość na dwie linie */
@@ -510,6 +503,13 @@ sup {
 
     .input {
         background-color: rgb(246, 221, 192);
+    }
+
+    .money {
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
+        text-align: right;
     }
 
     .tooltip-icon {

@@ -2,12 +2,12 @@ const express = require("express");
 const puppeteer = require("puppeteer");
 const path = require("path");
 const validator = require("validator");
+const { PDFDocument } = require("pdf-lib");
 
 const app = express();
 const port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/generate-pdf", async (req, res) => {
@@ -15,7 +15,6 @@ app.post("/generate-pdf", async (req, res) => {
     console.log(req.body);
 
     try {
-        // navigate to the default form
         const browser = await puppeteer.launch({
             headless: true,
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -24,7 +23,7 @@ app.post("/generate-pdf", async (req, res) => {
         const filePath = `file:${path.join(__dirname, "public", "index.html")}`;
         await page.goto(filePath);
 
-        // fill the form with the data from the request
+        // Fill form data
         await page.evaluate((body) => {
             document.getElementById("nazwa_jednostki").value = body.nazwa_jednostki.trim();
             document.getElementById("nazwa_zamowienia_text").textContent = body.nazwa_zamowienia.trim();
@@ -77,8 +76,23 @@ app.post("/generate-pdf", async (req, res) => {
             throw new Error("Brak części lub źródeł finansowania");
         }
 
-        // generate the PDF
-        const pdfBuffer = await page.pdf({
+        // Generate first page without footer
+        const firstPageBuffer = await page.pdf({
+            scale: 0.49,
+            printBackground: true,
+            format: "A4",
+            margin: {
+                top: "10mm",
+                right: "10mm",
+                bottom: "10mm", // Smaller bottom margin for first page
+                left: "10mm",
+            },
+            pageRanges: "1",
+            displayHeaderFooter: false,
+        });
+
+        // Generate remaining pages with footer
+        const restPagesBuffer = await page.pdf({
             scale: 0.49,
             printBackground: true,
             format: "A4",
@@ -88,6 +102,7 @@ app.post("/generate-pdf", async (req, res) => {
                 bottom: "20mm",
                 left: "10mm",
             },
+            pageRanges: "2-",
             displayHeaderFooter: true,
             headerTemplate: `<div></div>`,
             footerTemplate: `
@@ -101,14 +116,30 @@ app.post("/generate-pdf", async (req, res) => {
 
         await browser.close();
 
-        // send the PDF as a response
+        // Merge PDFs
+        const mergedPdf = await PDFDocument.create();
+
+        // Add first page
+        const firstPdf = await PDFDocument.load(firstPageBuffer);
+        const firstPages = await mergedPdf.copyPages(firstPdf, firstPdf.getPageIndices());
+        firstPages.forEach((page) => mergedPdf.addPage(page));
+
+        // Add remaining pages if they exist
+        if (restPagesBuffer.length > 0) {
+            const restPdf = await PDFDocument.load(restPagesBuffer);
+            const restPages = await mergedPdf.copyPages(restPdf, restPdf.getPageIndices());
+            restPages.forEach((page) => mergedPdf.addPage(page));
+        }
+
+        const finalPdfBuffer = await mergedPdf.save();
+
         res.set({
             "Content-Type": "application/pdf",
             "Content-Disposition": "attachment; filename=ZP.pdf",
-            "Content-Length": pdfBuffer.length,
+            "Content-Length": finalPdfBuffer.length,
         });
 
-        res.end(pdfBuffer);
+        res.end(Buffer.from(finalPdfBuffer));
     } catch (error) {
         console.error(new Date(), error);
         res.status(500).send("An error occurred while generating the PDF");

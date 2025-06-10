@@ -11,6 +11,7 @@
   "description": "Generator wniosków o udzielenie zamówienia publicznego dla Samorządu Studentów Politechniki Warszawskiej",
   "dependencies": {
     "express": "^4.21.0",
+    "pdf-lib": "^1.17.1",
     "puppeteer": "^23.5.0",
     "validator": "^13.12.0"
   }
