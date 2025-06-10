@@ -333,25 +333,51 @@
         <div class="color">Procedura/tryb <span class="small">(zaznaczyć pole wyboru w 16.1. lub w 16.2. – w tym przypadku obligatoryjnie uzupełnić część B)</span></div>
 
         <div class="lp">16.1.</div>
-        <div class="line-height">
-            <input type="checkbox" class="checkbox-input" disabled checked>
-            <span class="checkbox"></span><!--
-            -->Zamówienie udzielane z wyłączeniem/<s>stosowaniem</s> przepisów ustawy Prawo zamówień publicznych
-            <br>
-            Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>: art. 2, ust. 1, pkt. 1 ustawy PZP
-            <br>
-            Uzasadnienie faktyczne zastosowania ww. podstawy prawnej: Wartość zamówienia nie przekracza kwoty 130 000,00 zł
-        </div>
+        <section>
+            <div class="line-height">
+                <input type="hidden" name="wylaczenie_stosowanie" id="wylaczenie_stosowanie" value="0">
+                <label style="padding: 0;">
+                    <input type="checkbox" class="checkbox-input" id="checkbox_16_1" name="checkbox_16_1" checked disabled>
+                    <span class="checkbox" id="checkbox_16_1_span"></span></label>Zamówienie udzielane z <span id="wylaczenie_stosowanie_span"><span id="16_1_wylaczenie">wyłączeniem</span>/<span id="16_1_stosowanie" class="strike">stosowaniem</span></span> przepisów ustawy Prawo zamówień publicznych
+                <br>
+                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>: 
+                <select class="input-box input-select no-print-inline" id="uzasadnienie_prawne_1" name="uzasadnienie_prawne_1" disabled>
+                    <option value="art. 2, ust. 1, pkt. 1 ustawy PZP">art. 2, ust. 1, pkt. 1 ustawy PZP</option>
+                    <option value="art. 11, ust. 5, pkt. 1 ustawy PZP">art. 11, ust. 5, pkt. 1 ustawy PZP</option>
+                    <option value="art. 11, ust. 5, pkt. 2 ustawy PZP">art. 11, ust. 5, pkt. 2 ustawy PZP</option>
+                </select>
+                <span id="uzasadnienie_prawne_1_text"></span>
+                <br>
+                Uzasadnienie faktyczne zastosowania ww. podstawy prawnej: 
+                <span id="uzasadnienie_faktyczne_1_span"></span>
+            </div>
+            <div class="no-print" id="uzasadnienie_faktyczne_1_text">Wartość zamówienia nie przekracza kwoty 130 000,00 zł</div>
+            <input type="hidden" name="uzasadnienie_faktyczne_1" id="uzasadnienie_faktyczne_1">
+        </section>
 
         <div class="lp">16.2.</div>
-        <div class="line-height">
-            <input type="checkbox" class="checkbox-input" disabled>
-            <span class="checkbox"></span>Tryb udzielenia zamówienia:<sup>2</sup>
-            <br>
+        <section>
+            <div class="line-height">
+                <label style="padding: 0;">
+                    <input type="checkbox" class="checkbox-input" id="checkbox_16_2" name="checkbox_16_2" disabled>
+                    <span class="checkbox" id="checkbox_16_2_span"></span></label>Tryb udzielenia zamówienia:<sup>2</sup> 
+                    <span id="tryb_udzielenia_span"></span>
+            </div>
+            <div class="no-print" id="tryb_udzielenia_text"></div>
+            <input type="hidden" name="tryb_udzielenia" id="tryb_udzielenia">
+            <div>
             Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:
-            <br>
-            Uzasadnienie faktyczne (powody) zastosowania trybu:
-        </div>
+                <span id="uzasadnienie_prawne_2_span"></span>
+            </div>
+            <div class="no-print" id="uzasadnienie_prawne_2_text"></div>
+            <input type="hidden" name="uzasadnienie_prawne_2" id="uzasadnienie_prawne_2">
+            <div>
+                Uzasadnienie faktyczne (powody) zastosowania trybu:
+                <span id="uzasadnienie_faktyczne_2_span"></span>
+            </div>
+            <div class="no-print" id="uzasadnienie_faktyczne_2_text"></div>
+            <input type="hidden" name="uzasadnienie_faktyczne_2" id="uzasadnienie_faktyczne_2">
+        </section>
 
         <div class="lp">17.</div>
         <section class="grid-container grid-signature">

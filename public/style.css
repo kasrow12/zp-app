@@ -344,10 +344,13 @@ form > * {
 }
 
 .zrodlo-finansowania {
+    margin: 0.4em 0.4em 0 0.4em;
+}
+
+.input-select {
     display: none;
     font-size: inherit;
     font-family: inherit;
-    margin: 0.4em 0.4em 0 0.4em;
     padding: 0.2em;
     border: 1px solid black;
 }
@@ -438,6 +441,7 @@ sup {
 }
 
 .no-print,
+.no-print-inline,
 .no-print-contents {
     display: none;
 }
@@ -487,6 +491,10 @@ sup {
     opacity: 1;
 }
 
+.strike {
+    text-decoration: line-through;
+}
+
 @media screen {
     html {
         background-color: #dcdcdc;
@@ -521,8 +529,8 @@ sup {
         padding-right: 1ch;
     }
 
-    .zrodlo-finansowania {
-        display: block;
+    .input-select {
+        display: initial;
     }
 
     .zrodlo-finansowania-text {
@@ -541,6 +549,10 @@ sup {
 
     .no-print-contents {
         display: contents;
+    }
+
+    .no-print-inline {
+        display: inline;
     }
 
     .print-contents {
