@@ -84,11 +84,16 @@ app.post("/generate-pdf", async (req, res) => {
             margin: {
                 top: "10mm",
                 right: "10mm",
-                bottom: "10mm", // Smaller bottom margin for first page
+                bottom: "20mm",
                 left: "10mm",
             },
             pageRanges: "1",
-            displayHeaderFooter: false,
+            displayHeaderFooter: true,
+            headerTemplate: `<div></div>`,
+            footerTemplate: `
+            <div style="font-size: 9px; width: 80%; margin: 0 auto; padding-bottom: 1em;">
+                <div style="text-align: center;"><span class="pageNumber"></span> z <span class="totalPages"></span></div>
+            </div>`,
         });
 
         // Generate remaining pages with footer
