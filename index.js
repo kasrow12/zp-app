@@ -59,6 +59,20 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("informacje_dodatkowe_text").textContent = body.informacje_dodatkowe.trim();
             document.getElementById("zalaczniki_text").textContent = body.zalaczniki.trim();
 
+            document.getElementById("checkbox_16_1").checked = body.checkbox_16_1 === "on";
+            document.getElementById("uzasadnienie_prawne_1_text").textContent = body.uzasadnienie_prawne_1.trim();
+            document.getElementById("uzasadnienie_faktyczne_1_span").textContent = body.uzasadnienie_faktyczne_1.trim();
+
+            if (body.wylaczenie_stosowanie !== "0") {
+                document.getElementById("16_1_wylaczenie").classList.toggle("strike");
+                document.getElementById("16_1_stosowanie").classList.toggle("strike");
+            }
+
+            document.getElementById("checkbox_16_2").checked = body.checkbox_16_2 === "on";
+            document.getElementById("tryb_udzielenia_span").textContent = body.tryb_udzielenia.trim();
+            document.getElementById("uzasadnienie_prawne_2_span").textContent = body.uzasadnienie_prawne_2.trim();
+            document.getElementById("uzasadnienie_faktyczne_2_span").textContent = body.uzasadnienie_faktyczne_2.trim();
+
             document.getElementById("osoba_wnioskujaca_text").textContent = body.osoba_wnioskujaca.trim();
         }, req.body);
 
