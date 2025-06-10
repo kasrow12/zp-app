@@ -179,12 +179,12 @@ form > * {
 }
 
 .grid-7 {
-    grid-template-columns: 1fr 13ch max-content 13ch max-content;
+    grid-template-columns: 1fr 16ch max-content 16ch 12ch;
 }
 
 /* zł, co stanowi równowartość na dwie linie */
 .czesci .grid-7 {
-    grid-template-columns: 1fr 13ch min-content 13ch max-content;
+    grid-template-columns: 1fr 16ch min-content 16ch 12ch;
 }
 
 .grid-10 {
@@ -444,8 +444,13 @@ sup {
     background-color: #ffcccc !important;
 }
 
-.no-print {
+.no-print,
+.no-print-contents {
     display: none;
+}
+
+.print-contents {
+    display: contents;
 }
 
 /* Tooltips */
@@ -532,6 +537,14 @@ sup {
 
     .no-print {
         display: block;
+    }
+
+    .no-print-contents {
+        display: contents;
+    }
+
+    .print-contents {
+        display: none;
     }
 
     .controls {

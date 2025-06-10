@@ -167,7 +167,7 @@
             </section>
 
             <!-- po co tu ten checkbox? -->
-            <section class="grid-row">
+            <section class="grid-row no-print-contents">
                 <label>
                     <input type="checkbox" class="checkbox-input" checked disabled>
                     <span class="checkbox"></span>
@@ -175,15 +175,26 @@
                 </label>
                 <input class="money input input-box" name="wartosc_zamowienia" id="wartosc_zamowienia"
                     value="0,00" maxlength="10" required>
-                <div class="color">zł, co stanowi równowartość</div>
+                <div>zł, co stanowi równowartość</div>
                 <div class="money" id="wartosc_zamowienia_euro">0,00</div>
-                <div class="color">euro</div>
+                <div>euro</div>
+            </section>
+
+            <section class="grid-row print-contents">
+                <div class="full-width block">
+                    <input type="checkbox" class="checkbox-input" checked disabled>
+                    <span class="checkbox"></span>
+                    <span>zamówienia</span>
+                    <span id="wartosc_zamowienia_text"></span>
+                    <span>zł, co stanowi równowartość</span>
+                    <span id="wartosc_zamowienia_euro_text"></span>
+                    <span>euro</span>                
+                </div>
             </section>
 
             <!-- <czesci-row /> -->
-            <!-- <czesci-row /> -->
 
-            <section class="grid-row" id="czesci-7-after">
+            <section class="grid-row no-borders" id="czesci-7-after">
                 <div class="full-width color">
                     Zamówienie udzielane w zastosowaniem przepisu art. 30 ust. 4 ustawy Prawo zamówień publicznych:
                 </div>
@@ -278,6 +289,10 @@
         <div class="input-padding">
             Termin wykonania zamówienia <span class="small">(określony w dniach, tygodniach, miesiącach, latach wraz z podaniem terminu początkowego; data wyłącznie gdy jest to uzasadnione obiektywną przyczyną)</span>:&nbsp;<span class="input" id="termin_wykonania_text"></span>
             <input type="hidden" name="termin_wykonania" id="termin_wykonania" required>
+            <span class="tooltip-icon">
+                ?
+                <span class="tooltip">np. 2 tygodnie po akceptacji wniosku</span>
+            </span>
         </div>
 
         <div class="lp">14.</div>
@@ -309,7 +324,7 @@
         zabawa żeby nie było w drugiej linijce -->
         <div class="lp">15.</div>
         <section>
-            <div class="padding-left">Załączniki do wniosku: opis przedmiotu zamówienia, oświadczenie wybranego kontrahenta o braku współpracy z Rosją, porównanie ofert, inne:</div>
+            <div class="padding-left">Załączniki do wniosku: opis przedmiotu zamówienia, oświadczenie wybranego kontrahenta o braku współpracy z Rosją, inne:</div>
             <div class="input" id="zalaczniki_text">Dokument z ustalenia wartości zamówienia</div>
             <input type="hidden" name="zalaczniki" id="zalaczniki">
         </section>

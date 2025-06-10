@@ -274,9 +274,9 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC) {
                 <div class="input wartosc-nazwa">${escapeHtml(nazwa.trim())}</div>
             </div>
             <div class="money input wartosc-zamowienia">${escapeHtml(wartosc.trim())}</div>
-            <div class="color">zł, co stanowi równowartość</div>
+            <div>zł, co stanowi równowartość</div>
             <div class="money wartosc-zamowienia-euro">${euroValue}</div>
-            <div class="color">euro</div>
+            <div>euro</div>
         </section>`.trim();
 }
 
@@ -631,10 +631,13 @@ setFormEditable();
 
 const wartoscZamowieniaInput = document.getElementById("wartosc_zamowienia");
 const wartoscZamowieniaEuro = document.getElementById("wartosc_zamowienia_euro");
+const wartoscZamowieniaEuroText = document.getElementById("wartosc_zamowienia_euro_text");
 
 const updateEuro = () => {
     const plnValue = wartoscZamowieniaInput.value;
-    wartoscZamowieniaEuro.innerText = calculateEuro(plnValue);
+    const euro = calculateEuro(plnValue);
+    wartoscZamowieniaEuro.innerText = euro;
+    wartoscZamowieniaEuroText.innerText = euro;
 };
 
 wartoscZamowieniaInput.addEventListener("input", updateEuro);
