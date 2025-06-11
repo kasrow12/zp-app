@@ -175,6 +175,19 @@ form > * {
     grid-template-columns: 1fr 16ch max-content 15ch 15ch;
 }
 
+.wartosc-zamowienia {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.wartosc-zamowienia > :not(.checkbox) {
+    padding: 0.4em 0.8em;
+    border-right: 1px solid black;
+}
+.wartosc-zamowienia > :first-child {
+    border-right: 1px solid black;
+}
+
 /* zł, co stanowi równowartość na dwie linie */
 .czesci .grid-7 {
     grid-template-columns: 1fr 16ch min-content 16ch 12ch;
@@ -442,12 +455,9 @@ sup {
 
 .no-print,
 .no-print-inline,
-.no-print-contents {
+.bez-czesci .no-print-bez-czesci,
+.czesci .no-print-czesci {
     display: none;
-}
-
-.print-contents {
-    display: contents;
 }
 
 /* Tooltips */
@@ -547,7 +557,7 @@ sup {
         display: block;
     }
 
-    .no-print-contents {
+    .bez-czesci .no-print-bez-czesci {
         display: contents;
     }
 
@@ -555,7 +565,7 @@ sup {
         display: inline;
     }
 
-    .print-contents {
+    .no-print-czesci {
         display: none;
     }
 
