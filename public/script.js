@@ -32,18 +32,16 @@ const zamowieniePzpKwota = document.getElementById("zamowienie_pzp_kwota_text");
 
 const checkbox_16_1 = document.getElementById("checkbox_16_1");
 const checkbox_16_1_span = document.getElementById("checkbox_16_1_span");
-const uzasadnieniePrawne1 = document.getElementById("uzasadnienie_prawne_1");
-const uzasadnienieFaktyczne1 = document.getElementById("uzasadnienie_faktyczne_1_text");
 const wylaczenieStosowanie = document.getElementById("wylaczenie_stosowanie");
 const wylaczenieStosowanieSpan = document.getElementById("wylaczenie_stosowanie_span");
-const trybUdzielenia = document.getElementById("tryb_udzielenia");
-const trybUdzieleniaSpan = document.getElementById("tryb_udzielenia_text");
 const wylaczenie = document.getElementById("16_1_wylaczenie");
 const stosowanie = document.getElementById("16_1_stosowanie");
+const uzasadnieniePrawne1 = document.getElementById("uzasadnienie_prawne_1");
+const uzasadnienieFaktyczne1 = document.getElementById("uzasadnienie_faktyczne_1_text");
 
 const checkbox_16_2 = document.getElementById("checkbox_16_2");
 const checkbox_16_2_span = document.getElementById("checkbox_16_2_span");
-
+const trybUdzieleniaText = document.getElementById("tryb_udzielenia_text");
 const uzasadnieniePrawne2 = document.getElementById("uzasadnienie_prawne_2_text");
 const uzasadnienieFaktyczne2 = document.getElementById("uzasadnienie_faktyczne_2_text");
 
@@ -139,16 +137,16 @@ function dodatkoweHandler() {
     // 16.1.
     toggleVisibility(checkbox_16_1, dodatkowe);
     toggleVisibility(checkbox_16_1_span, dodatkowe);
+    toggleVisibility(wylaczenieStosowanieSpan, dodatkowe);
     toggleVisibility(uzasadnieniePrawne1, dodatkowe);
     toggleVisibility(uzasadnienieFaktyczne1, dodatkowe);
-    toggleVisibility(wylaczenieStosowanieSpan, dodatkowe);
     setContentEditable(uzasadnienieFaktyczne1, dodatkowe);
 
     // 16.2.
     toggleVisibility(checkbox_16_2, dodatkowe);
     toggleVisibility(checkbox_16_2_span, dodatkowe);
-    toggleVisibility(trybUdzieleniaSpan, dodatkowe);
-    setContentEditable(trybUdzieleniaSpan, dodatkowe);
+    toggleVisibility(trybUdzieleniaText, dodatkowe);
+    setContentEditable(trybUdzieleniaText, dodatkowe);
     toggleVisibility(uzasadnieniePrawne2, dodatkowe);
     setContentEditable(uzasadnieniePrawne2, dodatkowe);
     toggleVisibility(uzasadnienieFaktyczne2, dodatkowe);

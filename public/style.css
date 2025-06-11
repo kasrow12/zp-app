@@ -684,6 +684,14 @@ sup {
         border-radius: 50%;
         animation: button-loading-spinner 1s ease infinite;
     }
+
+    .footer {
+        display: flex;
+        margin: 1em;
+        justify-content: space-between;
+        font-family: Arial, sans-serif;
+        font-size: 0.8em;
+    }
 }
 
 @keyframes button-loading-spinner {

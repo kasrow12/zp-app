@@ -339,44 +339,38 @@
                 <label style="padding: 0;">
                     <input type="checkbox" class="checkbox-input" id="checkbox_16_1" name="checkbox_16_1" checked disabled>
                     <span class="checkbox" id="checkbox_16_1_span"></span></label>Zamówienie udzielane z <span id="wylaczenie_stosowanie_span"><span id="16_1_wylaczenie">wyłączeniem</span>/<span id="16_1_stosowanie" class="strike">stosowaniem</span></span> przepisów ustawy Prawo zamówień publicznych
-                <br>
-                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>: 
-                <select class="input-box input-select no-print-inline" id="uzasadnienie_prawne_1" name="uzasadnienie_prawne_1" disabled>
-                    <option value="art. 2, ust. 1, pkt. 1 ustawy PZP">art. 2, ust. 1, pkt. 1 ustawy PZP</option>
+            </div>
+            <div class="input-padding">
+                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>:&nbsp;<select class="input-box input-select no-print-inline" id="uzasadnienie_prawne_1" name="uzasadnienie_prawne_1" disabled>
+                    <option value=""></option>
+                    <option value="art. 2, ust. 1, pkt. 1 ustawy PZP" selected>art. 2, ust. 1, pkt. 1 ustawy PZP</option>
                     <option value="art. 11, ust. 5, pkt. 1 ustawy PZP">art. 11, ust. 5, pkt. 1 ustawy PZP</option>
                     <option value="art. 11, ust. 5, pkt. 2 ustawy PZP">art. 11, ust. 5, pkt. 2 ustawy PZP</option>
                 </select>
                 <span id="uzasadnienie_prawne_1_text"></span>
-                <br>
-                Uzasadnienie faktyczne zastosowania ww. podstawy prawnej: 
-                <span id="uzasadnienie_faktyczne_1_span"></span>
             </div>
-            <div class="no-print" id="uzasadnienie_faktyczne_1_text">Wartość zamówienia nie przekracza kwoty 130 000,00 zł</div>
-            <input type="hidden" name="uzasadnienie_faktyczne_1" id="uzasadnienie_faktyczne_1">
+            <div class="input-padding">
+                Uzasadnienie faktyczne (powody) zastosowania trybu:&nbsp;<span id="uzasadnienie_faktyczne_1_text">Wartość zamówienia nie przekracza kwoty 130 000,00 zł</span>
+                <input type="hidden" name="uzasadnienie_faktyczne_1" id="uzasadnienie_faktyczne_1" required>
+            </div>
         </section>
 
         <div class="lp">16.2.</div>
         <section>
-            <div class="line-height">
+            <div class="input-padding">
                 <label style="padding: 0;">
-                    <input type="checkbox" class="checkbox-input" id="checkbox_16_2" name="checkbox_16_2" disabled>
-                    <span class="checkbox" id="checkbox_16_2_span"></span></label>Tryb udzielenia zamówienia:<sup>2</sup> 
-                    <span id="tryb_udzielenia_span"></span>
+                        <input type="checkbox" class="checkbox-input" id="checkbox_16_2" name="checkbox_16_2" disabled>
+                        <span class="checkbox" id="checkbox_16_2_span"></span></label>Tryb udzielenia zamówienia:<sup>2</sup>&nbsp;<span id="tryb_udzielenia_text"></span>
+                <input type="hidden" name="tryb_udzielenia" id="tryb_udzielenia" required>
             </div>
-            <div class="no-print" id="tryb_udzielenia_text"></div>
-            <input type="hidden" name="tryb_udzielenia" id="tryb_udzielenia">
-            <div>
-            Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:
-                <span id="uzasadnienie_prawne_2_span"></span>
+            <div class="input-padding">
+                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:&nbsp;<span id="uzasadnienie_prawne_2_text"></span>
+                <input type="hidden" name="uzasadnienie_prawne_2" id="uzasadnienie_prawne_2" required>
             </div>
-            <div class="no-print" id="uzasadnienie_prawne_2_text"></div>
-            <input type="hidden" name="uzasadnienie_prawne_2" id="uzasadnienie_prawne_2">
-            <div>
-                Uzasadnienie faktyczne (powody) zastosowania trybu:
-                <span id="uzasadnienie_faktyczne_2_span"></span>
+            <div class="input-padding">
+                Uzasadnienie faktyczne (powody) zastosowania trybu:&nbsp;<span id="uzasadnienie_faktyczne_2_text"></span>
+                <input type="hidden" name="uzasadnienie_faktyczne_2" id="uzasadnienie_faktyczne_2" required>
             </div>
-            <div class="no-print" id="uzasadnienie_faktyczne_2_text"></div>
-            <input type="hidden" name="uzasadnienie_faktyczne_2" id="uzasadnienie_faktyczne_2">
         </section>
 
         <div class="lp">17.</div>
@@ -452,6 +446,10 @@
         <div><sup>1</sup> Należy wypełnić rubryki w kolorze białym, wskazane uzupełnienie na urządzeniu elektronicznym.</div>
         <div><sup>2</sup> Należy wskazać spośród listy: tryb podstawowy – bez negocjacji (art. 275 pkt 1 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje fakultatywne (art. 275 pkt 2 ustawy Prawo zamówień publicznych); tryb podstawowy – negocjacje obligatoryjne (art. 275 pkt 3 ustawy Prawo zamówień publicznych); partnerstwo innowacyjne; negocjacje bez ogłoszenia; zamówienie z wolnej ręki; konkurs; umowa ramowa; przetarg nieograniczony; przetarg ograniczony; negocjacje z ogłoszeniem; dialog konkurencyjny; dynamiczny system zakupów.</div>
     </div>
+</div>
+<div class="no-print footer">
+    <span>Wersja 0.7 (11.06.2025)</span>
+    <span>Autor: Maksymilian Soszyński</span>
 </div>
 <script src="script.js"></script>
 </body>
