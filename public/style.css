@@ -343,14 +343,14 @@ form > * {
     display: none;
 }
 
-.bez-czesci #kwota_przeznaczona_calosc {
+.bez-czesci .grid-row-span-2 {
     grid-row: span 2;
-    border-bottom: 0;
+    border-bottom: 0 !important;
 }
 
-.czesci #kwota_przeznaczona_calosc {
+/* .czesci .grid-row-span-2 {
     justify-content: end;
-}
+} */
 
 .zrodlo-finansowania-inne {
     align-self: stretch;
@@ -524,9 +524,9 @@ sup {
     }
 
     .money {
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
+        /* flex-direction: column; */
+        /* align-items: flex-end; */
+        justify-content: end;
         text-align: right;
     }
 

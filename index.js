@@ -52,8 +52,9 @@ app.post("/generate-pdf", async (req, res) => {
 
             document.getElementById("dzien_zamowienia").value = body.dzien_zamowienia.trim();
             document.getElementById("podstawa_ust_wartosci_text").textContent = body.podstawa_ust_wartosci.trim();
-            document.getElementById("wartosc_brutto").value = body.wartosc_brutto.trim();
-            document.getElementById("kwota_przeznaczona_calosc").value = body.kwota_przeznaczona_calosc.trim();
+            document.getElementById("wartosc_brutto_text").textContent = body.wartosc_brutto.trim();
+            document.getElementById("kwota_przeznaczona_calosc_text").textContent =
+                body.kwota_przeznaczona_calosc.trim();
 
             document.getElementById("termin_wykonania_text").textContent = body.termin_wykonania.trim();
             document.getElementById("informacje_dodatkowe_text").textContent = body.informacje_dodatkowe.trim();

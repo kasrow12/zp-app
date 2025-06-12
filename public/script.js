@@ -4,7 +4,6 @@ const DEFAULT_WARTOSC = "0,00";
 const MAX_ZRODLA_FINANSOWANIA = 8;
 const DEFAULT_ZRODLO_INNE = "Dziekan";
 const DEFAULT_NR_WNIOSKU = `/${new Date().getFullYear()}`;
-const DEFAULT_KWOTA = `${DEFAULT_WARTOSC} zł`;
 const EURO_RATE = 4.6371;
 
 let czesciCount = 0;
@@ -191,7 +190,9 @@ function setFormEditable() {
         #dodatkowe_cpv_text,
         .wartosc-zamowienia,
         .kwota-brutto,
+        #wartosc_brutto_text,
         .kwota-przeznaczona,
+        #kwota_przeznaczona_calosc_text,
         .zrodlo-finansowania-kwota,
         .zrodlo-nr-wniosku,
         #termin_wykonania_text,
@@ -314,17 +315,19 @@ function getWartoscCzesci(i, nazwa = "", wartosc = DEFAULT_WARTOSC) {
 }
 
 // 10. Zwraca wiersz kwoty brutto
-function getKwotaBrutto(i, kwota = DEFAULT_KWOTA) {
+function getKwotaBrutto(i, kwota = DEFAULT_WARTOSC) {
     return `
         <section class="grid-row czesci-row">
             <div>Część&nbsp;${i}:</div>
-            <div class="input money kwota-brutto">${escapeHtml(kwota.trim())}</div>
+            <div class="input-padding">
+                <span class="input kwota-brutto">${escapeHtml(kwota.trim())}</span><span>&nbsp;zł</span>
+            </div>
             <div class="filler"></div>
         </section>`.trim();
 }
 
 // 11. Zwraca wiersz kwoty przeznaczonej
-function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
+function getKwotaPrzeznaczona(i, kwota = DEFAULT_WARTOSC, zrodla) {
     let zrodlaText = "";
     if (zrodla) {
         zrodlaText = zrodla
@@ -336,9 +339,11 @@ function getKwotaPrzeznaczona(i, kwota = DEFAULT_KWOTA, zrodla) {
 
     return `
         <section class="grid-row czesci-row">
-            <div class="mult-flex-row3 input-padding">
+            <div class="mult-flex-row3">
                 <div>Część&nbsp;${i}:</div>
-                <div class="input kwota-przeznaczona">${escapeHtml(kwota.trim())}</div>
+                <div class="input-padding">
+                    <span class="input kwota-przeznaczona">${escapeHtml(kwota.trim())}</span><span>&nbsp;zł</span>
+                </div>
             </div>
             <section class="grid-11-row">
                 ${zrodlaText}
@@ -351,7 +356,7 @@ function getZrodloFinansowania(
     selected = 0,
     nrWniosku = DEFAULT_NR_WNIOSKU,
     inne = DEFAULT_ZRODLO_INNE,
-    kwota = DEFAULT_KWOTA
+    kwota = DEFAULT_WARTOSC
 ) {
     return `
         <section class="grid-row zrodlo-finansowania-row">
@@ -359,7 +364,7 @@ function getZrodloFinansowania(
                 <select class="input zrodlo-finansowania input-select" onchange="zrodloFinansowaniaHandler(this)" data-selected="${Number(
                     selected
                 )}">
-                    <option selected disabled hidden>Wybierz źródło finansowania</option>
+                    <option selected disabled hidden>-- Wybierz źródło finansowania --</option>
                     <option>ŚnDS Akademikalia</option>
                     <option>ŚnDS Bale</option>
                     <option>ŚnDS Delegacje i wyjazdy na konferencje</option>
@@ -400,7 +405,7 @@ function getZrodloFinansowania(
                 <span class="remove-row-button row-button" onclick="usunZrodlo(this)" title="Usuń źródło">&times;</span>
             </section>
             <div class="money input-padding">
-                <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div>
+                <div class="input zrodlo-finansowania-kwota">${escapeHtml(kwota.trim())}</div><span>&nbsp;zł</span>
             </div>
         </section>`.trim();
 }
@@ -459,8 +464,8 @@ function czesciFromJson(czesci) {
 
             const nazwa = czesc.nazwa || "";
             const wartosc = czesc.wartosc || DEFAULT_WARTOSC;
-            const brutto = czesc.brutto || DEFAULT_KWOTA;
-            const kwotaPrzeznaczona = czesc.kwotaPrzeznaczona || DEFAULT_KWOTA;
+            const brutto = czesc.brutto || DEFAULT_WARTOSC;
+            const kwotaPrzeznaczona = czesc.kwotaPrzeznaczona || DEFAULT_WARTOSC;
             const zrodla = czesc.zrodla || [];
 
             const wartosciText = getWartoscCzesci(i, nazwa, wartosc);

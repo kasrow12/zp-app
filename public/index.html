@@ -240,8 +240,10 @@
                 <div class="color block full-width">Kwota brutto <span class="small">(wartość zamówienia łącznie z należnymi opłatami, w tym VAT)</span></div>
             </section>
             <section class="grid-row">
-                <input class="full-width input input-box" name="wartosc_brutto" id="wartosc_brutto"
-                    value="0,00 zł" required>
+                <div class="full-width input-padding">
+                    <span class="input" id="wartosc_brutto_text">0,00</span><span>&nbsp;zł</span>
+                    <input type="hidden" name="wartosc_brutto" id="wartosc_brutto">
+                </div>
             </section>
 
             <!-- <czesci-row /> -->
@@ -256,8 +258,10 @@
                 <div class="color full-width">Kwota przeznaczona na sfinansowanie zamówienia</div>
             </section>
             <section class="grid-row">
-                <input class="input input-box" name="kwota_przeznaczona_calosc" id="kwota_przeznaczona_calosc"
-                    value="0,00 zł" required>
+                <div class="input-padding grid-row-span-2">
+                    <span class="input input-box" id="kwota_przeznaczona_calosc_text">0,00</span><span>&nbsp;zł</span>
+                    <input type="hidden" name="kwota_przeznaczona_calosc" id="kwota_przeznaczona_calosc" required>
+                </div>
                 <div class="color">źródła finansowania</div>
                 <div class="color">kwoty</div>
             </section>
