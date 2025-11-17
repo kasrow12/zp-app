@@ -295,14 +295,14 @@
             <input type="hidden" name="termin_wykonania" id="termin_wykonania" required>
             <span class="tooltip-icon">
                 ?
-                <span class="tooltip">np. 2 tygodnie po akceptacji wniosku</span>
+                <span class="tooltip">np. 2 tygodnie po akceptacji wniosku, konkretna data (np. 2 lipca 2025)</span>
             </span>
         </div>
 
         <div class="lp">14.</div>
         <section>
                 <div>Informacje dodatkowe <span class="small">(jeżeli dotyczy, np. nazwy potencjalnych wykonawców, itd.)</span>:</div>
-                <div class="input line-height" id="informacje_dodatkowe_text">Rozliczenie przez fakturę VAT<br>Podmiot, do którego zamierza się wystąpić z ofertą: XXX<br>Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
+                <div class="input line-height" id="informacje_dodatkowe_text">Rozliczenie przez fakturę VAT<br>albo<br>Rozliczenie na podstawie umowy o dzieło według Zarządzenia Rektora PW 87/2021<br>albo<br>Rozliczenie na podstawie umowy zlecenia według Zarządzenia Rektora PW 87/2021<br><br>Podmiot, do którego zamierza się wystąpić z ofertą: XXX<br>Wybrano XXX ze względu na XXXXXXX oraz korzystną ofertę cenową</div>
             <input type="hidden" name="informacje_dodatkowe" id="informacje_dodatkowe">
             <!-- <section class="grid-row">
                 <div class="full-width">Rozliczenie przez fakturę VAT</div>
@@ -347,14 +347,19 @@
             <div class="input-padding">
                 Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span>:&nbsp;<select class="input-box input-select no-print-inline" id="uzasadnienie_prawne_1" name="uzasadnienie_prawne_1" disabled>
                     <option value=""></option>
-                    <option value="art. 2, ust. 1, pkt. 1 ustawy PZP" selected>art. 2, ust. 1, pkt. 1 ustawy PZP</option>
-                    <option value="art. 11, ust. 5, pkt. 1 ustawy PZP">art. 11, ust. 5, pkt. 1 ustawy PZP</option>
-                    <option value="art. 11, ust. 5, pkt. 2 ustawy PZP">art. 11, ust. 5, pkt. 2 ustawy PZP</option>
+                    <option value="art. 2 ust. 1 pkt 1 ustawy PZP" selected>art. 2 ust. 1 pkt 1 ustawy PZP</option>
+                    <option value="art. 11 ust. 5 pkt 1 ustawy PZP">art. 11 ust. 5 pkt 1 ustawy PZP</option>
+                    <option value="art. 11 ust. 5 pkt 2 ustawy PZP">art. 11 ust. 5 pkt 2 ustawy PZP</option>
                 </select>
                 <span id="uzasadnienie_prawne_1_text"></span>
             </div>
             <div class="input-padding">
-                Uzasadnienie faktyczne (powody) zastosowania trybu:&nbsp;<span id="uzasadnienie_faktyczne_1_text">Wartość zamówienia nie przekracza kwoty 130 000,00 zł</span>
+                Uzasadnienie faktyczne (powody) zastosowania trybu:
+                <span class="tooltip-icon">
+                    ?
+                    <span class="tooltip">Zamówienie wyłączone z obowiązku stosowania ustawy PZP - Eksperyment Naukowy<br>Organizacja widowiska - koncertu artystycznego<br>Występ w ramach części artystycznej wydarzenia<br>Wartość zamówienia nie przekracza kwoty 130 000,00 zł, zamówienie nietożsame, niesumujące się</span>
+                </span>
+                <span id="uzasadnienie_faktyczne_1_text">Wartość zamówienia nie przekracza kwoty 130 000,00 zł</span>
                 <input type="hidden" name="uzasadnienie_faktyczne_1" id="uzasadnienie_faktyczne_1" required>
             </div>
         </section>
@@ -365,14 +370,18 @@
                 <label style="padding: 0;">
                         <input type="checkbox" class="checkbox-input" id="checkbox_16_2" name="checkbox_16_2" disabled>
                         <span class="checkbox" id="checkbox_16_2_span"></span></label>Tryb udzielenia zamówienia:<sup>2</sup>&nbsp;<span id="tryb_udzielenia_text"></span>
+                        <span class="tooltip-icon">
+                            ?
+                            <span class="tooltip">Punkt uwzględniany wyłącznie przy postępowaniu przetargowym</span>
+                        </span>
                 <input type="hidden" name="tryb_udzielenia" id="tryb_udzielenia" required>
             </div>
             <div class="input-padding">
-                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:&nbsp;<span id="uzasadnienie_prawne_2_text"></span>
+                Uzasadnienie prawne <span class="small">(podstawa prawna z ustawy Prawo zamówień publicznych)</span> wyboru trybu:&nbsp;<span id="uzasadnienie_prawne_2_text">art. 275 pkt 1 ustawy PZP</span>
                 <input type="hidden" name="uzasadnienie_prawne_2" id="uzasadnienie_prawne_2" required>
             </div>
             <div class="input-padding">
-                Uzasadnienie faktyczne (powody) zastosowania trybu:&nbsp;<span id="uzasadnienie_faktyczne_2_text"></span>
+                Uzasadnienie faktyczne (powody) zastosowania trybu:&nbsp;<span id="uzasadnienie_faktyczne_2_text">Kwota zamówienia przekracza kwotę określoną w art. 2 ust. 1 pkt 1 ustawy PZP</span>
                 <input type="hidden" name="uzasadnienie_faktyczne_2" id="uzasadnienie_faktyczne_2" required>
             </div>
         </section>

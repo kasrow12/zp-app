@@ -74,6 +74,8 @@ app.post("/generate-pdf", async (req, res) => {
             document.getElementById("uzasadnienie_prawne_2_text").textContent = body.uzasadnienie_prawne_2.trim();
             document.getElementById("uzasadnienie_faktyczne_2_text").textContent = body.uzasadnienie_faktyczne_2.trim();
 
+            trybUdzieleniaHandler();
+
             document.getElementById("osoba_wnioskujaca_text").textContent = body.osoba_wnioskujaca.trim();
         }, req.body);
 

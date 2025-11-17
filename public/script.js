@@ -144,12 +144,7 @@ function dodatkoweHandler() {
     // 16.2.
     toggleVisibility(checkbox_16_2, dodatkowe);
     toggleVisibility(checkbox_16_2_span, dodatkowe);
-    toggleVisibility(trybUdzieleniaText, dodatkowe);
-    setContentEditable(trybUdzieleniaText, dodatkowe);
-    toggleVisibility(uzasadnieniePrawne2, dodatkowe);
-    setContentEditable(uzasadnieniePrawne2, dodatkowe);
-    toggleVisibility(uzasadnienieFaktyczne2, dodatkowe);
-    setContentEditable(uzasadnienieFaktyczne2, dodatkowe);
+    trybUdzieleniaHandler();
 }
 
 // 5. Handler - przełączanie pola Kateogria usług
@@ -182,6 +177,35 @@ function zamowieniePzpHandler() {
     toggleVisibility(zamowieniePzpKwota, czyPzp);
 
     setContentEditable(zamowieniePzpKwota, czyPzp);
+}
+
+// 16.2. Handler - przełączanie pól uzasadnienia trybu
+function trybUdzieleniaHandler() {
+    const show = checkbox_16_2.checked;
+    const dodatkowe = dodatkoweCheckbox.checked;
+
+    // Widoczność tylko przy checkboxie
+    trybUdzieleniaText.classList.toggle("hidden", !show);
+    uzasadnieniePrawne2.classList.toggle("hidden", !show);
+    uzasadnienieFaktyczne2.classList.toggle("hidden", !show);
+
+    if (show) {
+        // Edytowalność i tło tylko przy dodatkowe
+        setContentEditable(trybUdzieleniaText, dodatkowe);
+        setContentEditable(uzasadnieniePrawne2, dodatkowe);
+        setContentEditable(uzasadnienieFaktyczne2, dodatkowe);
+        trybUdzieleniaText.classList.toggle("input", dodatkowe);
+        uzasadnieniePrawne2.classList.toggle("input", dodatkowe);
+        uzasadnienieFaktyczne2.classList.toggle("input", dodatkowe);
+    } else {
+        // Gdy niewidoczne, wyłącz edytowalność i tło
+        setContentEditable(trybUdzieleniaText, false);
+        setContentEditable(uzasadnieniePrawne2, false);
+        setContentEditable(uzasadnienieFaktyczne2, false);
+        trybUdzieleniaText.classList.remove("input");
+        uzasadnieniePrawne2.classList.remove("input");
+        uzasadnienieFaktyczne2.classList.remove("input");
+    }
 }
 
 // Ustawienie pól jako edytowalne
@@ -704,3 +728,7 @@ wylaczenieStosowanieSpan.addEventListener("click", (event) => {
         stosowanie.classList.toggle("strike");
     }
 });
+
+// Nasłuchiwanie zmian 16.2 oraz inicjalizacja stanu
+checkbox_16_2.addEventListener("change", trybUdzieleniaHandler);
+trybUdzieleniaHandler();
