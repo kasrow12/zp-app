@@ -1,6 +1,7 @@
 const express = require("express");
 const puppeteer = require("puppeteer");
 const path = require("path");
+const fs = require("fs");
 const validator = require("validator");
 const { PDFDocument } = require("pdf-lib");
 
@@ -9,6 +10,27 @@ const port = 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Wczytaj pliki HTML, CSS i JS raz przy starcie serwera
+const htmlTemplate = fs.readFileSync(path.join(__dirname, "public", "index.html"), "utf8");
+const cssContent = fs.readFileSync(path.join(__dirname, "public", "style.css"), "utf8");
+const jsContent = fs.readFileSync(path.join(__dirname, "public", "script.js"), "utf8");
+
+// Przygotuj pełny HTML z wstrzykniętymi stylami i skryptem
+function getFullHtml() {
+    let html = htmlTemplate;
+    // Zamień link do CSS na inline style
+    html = html.replace(
+        '<link rel="stylesheet" href="style.css">',
+        `<style>${cssContent}</style>`
+    );
+    // Zamień script src na inline script
+    html = html.replace(
+        '<script src="script.js"></script>',
+        `<script>${jsContent}</script>`
+    );
+    return html;
+}
 
 app.post("/generate-pdf", async (req, res) => {
     console.log(new Date(), "POST /generate-pdf");
@@ -20,8 +42,10 @@ app.post("/generate-pdf", async (req, res) => {
             args: ["--no-sandbox", "--disable-setuid-sandbox"],
         });
         const page = await browser.newPage();
-        const filePath = `file:${path.join(__dirname, "public", "index.html")}`;
-        await page.goto(filePath);
+
+        // Użyj setContent zamiast goto z protokołem file://
+        const fullHtml = getFullHtml();
+        await page.setContent(fullHtml, { waitUntil: "networkidle0" });
 
         // Fill form data
         await page.evaluate((body) => {
