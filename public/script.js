@@ -4,7 +4,7 @@ const DEFAULT_WARTOSC = "0,00";
 const MAX_ZRODLA_FINANSOWANIA = 8;
 const DEFAULT_ZRODLO_INNE = "Dziekan";
 const DEFAULT_NR_WNIOSKU = `/${new Date().getFullYear()}`;
-const EURO_RATE = 4.6371;
+const EURO_RATE = 4.31;
 
 let czesciCount = 0;
 
